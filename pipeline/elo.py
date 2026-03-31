@@ -10,7 +10,10 @@ Elo is mathematically equivalent to logistic regression (nicidob proof).
 Hits ~67% accuracy — robust regardless of parameter tuning.
 """
 import math
-from cache import load_cached, save_cached
+import requests
+import time
+from datetime import datetime, timedelta
+from cache import load_cached, save_cached, load_timestamps, update_timestamp, normalize_abbr
 
 # constants from 538's published research
 K = 20
@@ -186,8 +189,128 @@ def get_all_ratings():
     return sorted_teams
 
 
-if __name__ == "__main__":
+# ============================================================
+# ELO AUTO-UPDATE: pull completed games and update ratings
+# ============================================================
+
+ESPN_SCOREBOARD = "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard"
+
+# rough season start — don't look further back than this
+SEASON_START = "2025-10-20"
+
+
+def get_completed_games(date_str):
+    """
+    Pull completed NBA games for a specific date from ESPN.
+    date_str: "YYYY-MM-DD"
+    Returns list of {home, away, home_score, away_score, winner} dicts.
+    """
+    espn_date = date_str.replace("-", "")  # ESPN wants YYYYMMDD
+    try:
+        resp = requests.get(ESPN_SCOREBOARD, params={"dates": espn_date}, timeout=10)
+        resp.raise_for_status()
+    except Exception:
+        return []
+
+    results = []
+    for event in resp.json().get("events", []):
+        status = event["status"]["type"]["description"]
+        if status != "Final":
+            continue
+
+        comp = event["competitions"][0]
+        home = away = None
+        for t in comp["competitors"]:
+            info = {
+                "abbr": normalize_abbr(t["team"]["abbreviation"]),
+                "score": int(t.get("score", 0)),
+                "winner": t.get("winner", False),
+            }
+            if t["homeAway"] == "home":
+                home = info
+            else:
+                away = info
+
+        if home and away and (home["score"] > 0 or away["score"] > 0):
+            results.append({
+                "date": date_str,
+                "home": home["abbr"],
+                "away": away["abbr"],
+                "home_score": home["score"],
+                "away_score": away["score"],
+            })
+
+    return results
+
+
+def update_elo_from_results():
+    """
+    Check when Elo was last updated, pull all completed games since then,
+    and update ratings for each one in chronological order.
+
+    Called automatically at the start of each run.
+    """
     ratings = load_ratings()
+
+    # figure out when we last updated
+    timestamps = load_timestamps()
+    last_elo_update = timestamps.get("elo_game_update")
+
+    if last_elo_update:
+        # start from the day after the last update
+        last_date = datetime.fromisoformat(last_elo_update).date()
+        start_date = last_date + timedelta(days=1)
+    else:
+        # never updated — but we seeded from net ratings, so we don't need
+        # to replay the whole season. start from 3 days ago to catch up.
+        start_date = (datetime.now().date() - timedelta(days=3))
+
+    today = datetime.now().date()
+
+    # don't process today — games might still be in progress
+    end_date = today - timedelta(days=1)
+
+    if start_date > end_date:
+        print("  Elo ratings are up to date.")
+        return ratings
+
+    print(f"  Updating Elo from {start_date} to {end_date}...")
+
+    total_games = 0
+    current = start_date
+    while current <= end_date:
+        date_str = current.strftime("%Y-%m-%d")
+        games = get_completed_games(date_str)
+
+        for game in games:
+            home = game["home"]
+            away = game["away"]
+            h_score = game["home_score"]
+            a_score = game["away_score"]
+            margin = abs(h_score - a_score)
+
+            if h_score > a_score:
+                update_ratings(ratings, winner=home, loser=away, margin=margin)
+            else:
+                update_ratings(ratings, winner=away, loser=home, margin=margin)
+            total_games += 1
+
+        current += timedelta(days=1)
+        time.sleep(0.3)  # be nice to ESPN
+
+    # save updated ratings and record the update date
+    save_cached("elo_ratings", ratings)
+    # record that we've processed through end_date
+    # store as ISO datetime at end of that day
+    update_timestamp("elo_game_update")
+
+    print(f"  Processed {total_games} games. Elo ratings updated through {end_date}.")
+    return ratings
+
+
+if __name__ == "__main__":
+    print("Updating Elo ratings from game results...")
+    ratings = update_elo_from_results()
     print("\nCurrent Elo Ratings:")
     for team, elo in get_all_ratings():
         print(f"  {team}: {elo:.0f}")

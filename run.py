@@ -58,6 +58,13 @@ def main():
     from fetch_stats import fetch_all_stats
     fetch_all_stats()
 
+    # 2b. update Elo from recent game results
+    print("\n" + "=" * 50)
+    print("STEP 2b: Updating Elo ratings from game results")
+    print("=" * 50)
+    from elo import update_elo_from_results
+    update_elo_from_results()
+
     # 3a. The Odds API (if key configured)
     print("\n" + "=" * 50)
     print("STEP 3a: Fetching odds (The Odds API)")
