@@ -1,0 +1,2232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NBA Edge - 2026-03-30</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'DM Sans', -apple-system, sans-serif;
+  background: #FAF7F2;
+  color: #1A1A1A;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+/* ── Hero ── */
+.hero {
+  background: #0F0F0F;
+  color: #FAF7F2;
+  padding: 80px 24px 60px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.15;
+  pointer-events: none;
+}
+.blob-1 { width: 400px; height: 400px; background: #D4603A; top: -100px; left: -100px; }
+.blob-2 { width: 300px; height: 300px; background: #2A7D6F; bottom: -80px; right: -80px; }
+.blob-3 { width: 200px; height: 200px; background: #C8831A; top: 50%; left: 60%; }
+.hero-content { position: relative; z-index: 1; }
+.eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #D4603A;
+  margin-bottom: 12px;
+}
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 56px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  line-height: 1.1;
+}
+.hero h1 em {
+  color: #E8825F;
+  font-style: italic;
+}
+.hero-date {
+  font-family: 'DM Mono', monospace;
+  font-size: 15px;
+  color: #7A7570;
+  margin-bottom: 36px;
+}
+.hero-stats {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+.hero-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.hero-stat-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 32px;
+  font-weight: 500;
+  color: #FAF7F2;
+}
+.hero-stat-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #7A7570;
+  margin-top: 4px;
+}
+
+/* ── Game Sections ── */
+.game-section {
+  margin: 40px auto;
+  max-width: 1100px;
+  padding: 0 24px;
+}
+.game-header {
+  background: #0F0F0F;
+  color: #FAF7F2;
+  padding: 24px 32px;
+  border-radius: 12px 12px 0 0;
+}
+.game-header-teams {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 700;
+}
+.game-at {
+  font-family: 'DM Mono', monospace;
+  font-size: 16px;
+  color: #7A7570;
+}
+.game-header-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  color: #7A7570;
+}
+.meta-sep { opacity: 0.4; }
+
+.game-body {
+  background: #fff;
+  border: 1px solid #E2DDD5;
+  border-top: none;
+  border-radius: 0 0 12px 12px;
+  padding: 32px;
+}
+
+/* ── Section Blocks ── */
+.section-block {
+  margin-bottom: 32px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid #E2DDD5;
+}
+.section-block:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: #1A1A1A;
+}
+.section-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  background: #D4603A;
+  color: #fff;
+  padding: 3px 8px;
+  border-radius: 4px;
+  vertical-align: middle;
+  margin-left: 8px;
+}
+.section-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #D4603A;
+  margin-bottom: 8px;
+}
+.section-heading {
+  font-family: 'Playfair Display', serif;
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 24px;
+}
+
+/* ── Probability bars ── */
+.prob-grid { display: flex; flex-direction: column; gap: 16px; }
+.prob-card {
+  background: #FAF7F2;
+  border: 1px solid #E2DDD5;
+  border-radius: 8px;
+  padding: 16px;
+}
+.prob-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #7A7570;
+  margin-bottom: 8px;
+}
+.prob-bar-container {
+  display: flex;
+  height: 36px;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+.prob-bar-away {
+  background: #D4603A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  transition: width 0.5s ease;
+}
+.prob-bar-home {
+  background: #2A7D6F;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  transition: width 0.5s ease;
+}
+.prob-bar-away span, .prob-bar-home span {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: #fff;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.prob-detail {
+  font-size: 13px;
+  color: #7A7570;
+}
+.mc-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 13px;
+  font-family: 'DM Mono', monospace;
+  color: #7A7570;
+}
+.score-proj {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  font-family: 'DM Mono', monospace;
+  font-size: 24px;
+  color: #1A1A1A;
+  padding: 8px 0;
+}
+.score-sep { color: #7A7570; font-size: 18px; }
+.score-team strong { font-size: 28px; }
+
+/* Bayesian */
+.bayes-row { display: flex; gap: 16px; margin-top: 16px; }
+.bayes-card {
+  flex: 1;
+  background: #FAF7F2;
+  border: 1px solid #E2DDD5;
+  border-radius: 8px;
+  padding: 16px;
+}
+.bayes-mean {
+  font-family: 'DM Mono', monospace;
+  font-size: 28px;
+  font-weight: 500;
+  color: #1A1A1A;
+  margin: 4px 0;
+}
+.bayes-std {
+  font-size: 16px;
+  color: #7A7570;
+}
+
+/* ── Comparison Table ── */
+.comp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.comp-table th {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #7A7570;
+  padding: 8px 12px;
+  border-bottom: 2px solid #E2DDD5;
+}
+.comp-th-team { width: 40%; }
+.comp-th-stat { width: 20%; text-align: center; }
+.comp-table td { padding: 10px 12px; border-bottom: 1px solid #E2DDD5; }
+.comp-label {
+  text-align: center;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #7A7570;
+}
+.comp-val {
+  font-family: 'DM Mono', monospace;
+  font-size: 14px;
+}
+.comp-val:first-child { text-align: right; }
+.comp-val:last-child { text-align: left; }
+.rank-tag {
+  font-size: 10px;
+  color: #7A7570;
+  margin-left: 4px;
+}
+.rank-top { background: rgba(42, 125, 111, 0.1); }
+.rank-bot { background: rgba(212, 96, 58, 0.1); }
+
+/* ── Odds Tables ── */
+.odds-grid { display: flex; flex-direction: column; gap: 20px; }
+.odds-subtitle {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #7A7570;
+  margin-bottom: 8px;
+}
+.odds-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.odds-table th {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #7A7570;
+  padding: 6px 10px;
+  border-bottom: 2px solid #E2DDD5;
+  text-align: left;
+}
+.odds-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #E2DDD5;
+}
+.mono { font-family: 'DM Mono', monospace; }
+.edge-pos { background: rgba(42, 125, 111, 0.12); }
+.edge-neg { background: rgba(212, 96, 58, 0.08); }
+.edge-cell { font-weight: 600; }
+.no-data { color: #7A7570; font-style: italic; padding: 16px 0; }
+
+/* ── Four Factors ── */
+.ff-summary {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  font-size: 14px;
+  color: #7A7570;
+}
+.ff-grade { font-size: 16px; color: #1A1A1A; }
+.ff-tables { display: flex; gap: 20px; flex-wrap: wrap; }
+.ff-table-wrap { flex: 1; min-width: 280px; }
+
+/* ── Flags ── */
+.flags-container { display: flex; flex-direction: column; gap: 10px; }
+.flag-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: #FAF7F2;
+  border-left: 4px solid;
+  border-radius: 0 8px 8px 0;
+}
+.flag-icon { font-size: 18px; flex-shrink: 0; }
+.flag-text { flex: 1; font-size: 14px; }
+.flag-type {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  flex-shrink: 0;
+}
+
+/* ── Player Props ── */
+.props-section { overflow-x: auto; }
+.props-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.props-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  min-width: 900px;
+}
+.props-table th {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #7A7570;
+  padding: 6px 8px;
+  border-bottom: 2px solid #E2DDD5;
+  text-align: center;
+}
+.props-table .sub-header th {
+  border-bottom: 1px solid #E2DDD5;
+  font-size: 10px;
+}
+.group-header {
+  border-bottom: 2px solid #1A1A1A !important;
+  font-size: 12px !important;
+  color: #1A1A1A !important;
+}
+.props-table td {
+  padding: 8px 8px;
+  border-bottom: 1px solid #E2DDD5;
+  text-align: center;
+}
+.prop-name {
+  text-align: left !important;
+  white-space: nowrap;
+}
+.prop-team {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: #7A7570;
+  margin-left: 6px;
+}
+.prop-actionable { background: rgba(42, 125, 111, 0.05); }
+.dir-over { color: #2A7D6F; font-weight: 600; }
+.dir-under { color: #D4603A; font-weight: 600; }
+.dir-neutral { color: #7A7570; }
+
+/* ── Recent Form ── */
+.form-grid { display: flex; gap: 16px; }
+.form-card {
+  flex: 1;
+  background: #FAF7F2;
+  border: 1px solid #E2DDD5;
+  border-radius: 8px;
+  padding: 16px;
+}
+.form-team {
+  font-family: 'DM Mono', monospace;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.form-stats { display: flex; gap: 16px; flex-wrap: wrap; }
+.form-stat { display: flex; flex-direction: column; }
+.form-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #7A7570;
+}
+.form-val {
+  font-family: 'DM Mono', monospace;
+  font-size: 18px;
+  font-weight: 500;
+}
+.form-trend {
+  font-size: 13px;
+  color: #7A7570;
+  margin-top: 8px;
+  font-style: italic;
+}
+
+/* ── Elo Chart ── */
+.elo-section {
+  background: #fff;
+  border-top: 1px solid #E2DDD5;
+  border-bottom: 1px solid #E2DDD5;
+  padding: 48px 24px;
+  margin: 40px 0;
+}
+.elo-chart-wrap {
+  height: 750px;
+  position: relative;
+}
+
+/* ── Footer ── */
+.footer {
+  background: #0F0F0F;
+  color: #FAF7F2;
+  padding: 48px 24px 32px;
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  margin-bottom: 32px;
+}
+.footer-heading {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #D4603A;
+  margin-bottom: 12px;
+}
+.footer-text { font-size: 13px; color: #7A7570; line-height: 1.6; }
+.footer-list { list-style: none; }
+.footer-list li {
+  font-size: 13px;
+  color: #7A7570;
+  padding: 2px 0;
+}
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding-top: 20px;
+  text-align: center;
+}
+.footer-bottom p {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: #7A7570;
+}
+.footer-disclaimer { margin-top: 8px; font-style: italic; }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .hero h1 { font-size: 36px; }
+  .hero-stats { gap: 20px; }
+  .game-header-teams { font-size: 20px; }
+  .bayes-row { flex-direction: column; }
+  .form-grid { flex-direction: column; }
+  .ff-tables { flex-direction: column; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .comp-table { font-size: 12px; }
+}
+</style>
+</head>
+<body>
+  
+    <section class="hero">
+      <div class="hero-blob blob-1"></div>
+      <div class="hero-blob blob-2"></div>
+      <div class="hero-blob blob-3"></div>
+      <div class="hero-content">
+        <p class="eyebrow">NBA EDGE</p>
+        <h1>Tonight's <em>Edge</em></h1>
+        <p class="hero-date">2026-03-30</p>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <span class="hero-stat-num">2</span>
+            <span class="hero-stat-label">Games Analyzed</span>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-stat-num">12</span>
+            <span class="hero-stat-label">Insight Flags</span>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-stat-num">7</span>
+            <span class="hero-stat-label">Actionable Props</span>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-stat-num">80%</span>
+            <span class="hero-stat-label">Avg Model Confidence</span>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+  
+        <div class="game-section">
+          
+    <div class="game-header">
+      <div class="game-header-teams">
+        <span class="game-team away-team">Detroit Pistons</span>
+        <span class="game-at">@</span>
+        <span class="game-team home-team">Oklahoma City Thunder</span>
+      </div>
+      <div class="game-header-meta">
+        <span>54-20 vs 59-16</span>
+        <span class="meta-sep">|</span>
+        <span>Paycom Center</span>
+        <span class="meta-sep">|</span>
+        <span>9:30 PM ET</span>
+      </div>
+    </div>
+    
+          <div class="game-body">
+            
+    <div class="section-block">
+      <h3 class="section-title">Win Probability</h3>
+      <div class="prob-grid">
+
+        <!-- Elo Model -->
+        <div class="prob-card">
+          <p class="prob-label">Elo Model</p>
+          <div class="prob-bar-container">
+            <div class="prob-bar-away" style="width:30.6%">
+              <span>DET 31%</span>
+            </div>
+            <div class="prob-bar-home" style="width:69.4%">
+              <span>OKC 69%</span>
+            </div>
+          </div>
+          <p class="prob-detail">Projected spread: <strong>DET -5.7</strong></p>
+        </div>
+
+        <!-- Logistic Regression -->
+        <div class="prob-card">
+          <p class="prob-label">Logistic Regression</p>
+          <div class="prob-bar-container">
+            <div class="prob-bar-away" style="width:28.4%">
+              <span>DET 28%</span>
+            </div>
+            <div class="prob-bar-home" style="width:71.6%">
+              <span>OKC 72%</span>
+            </div>
+          </div>
+          <p class="prob-detail">Projected spread: <strong>DET -6.0</strong> &middot; 19 features</p>
+        </div>
+
+        <!-- Monte Carlo -->
+        <div class="prob-card">
+          <p class="prob-label">Monte Carlo (10,000 sims)</p>
+          <div class="prob-bar-container">
+            <div class="prob-bar-away" style="width:39.5%">
+              <span>DET 39%</span>
+            </div>
+            <div class="prob-bar-home" style="width:60.5%">
+              <span>OKC 61%</span>
+            </div>
+          </div>
+          <div class="mc-details">
+            <span>Mean margin: <strong>+4.5</strong></span>
+            <span>90% CI: [-23.7, 33.1]</span>
+            <span>P(close): 23%</span>
+            <span>P(blowout OKC): 27%</span>
+            <span>P(blowout DET): 12%</span>
+          </div>
+        </div>
+
+        <!-- Score Projection -->
+        <div class="prob-card">
+          <p class="prob-label">Score Projection</p>
+          <div class="score-proj">
+            <span class="score-team">DET <strong>111.3</strong></span>
+            <span class="score-sep">-</span>
+            <span class="score-team">OKC <strong>115.8</strong></span>
+          </div>
+          <p class="prob-detail">Projected total: <strong>227.1</strong></p>
+        </div>
+      </div>
+
+      <!-- Bayesian Strength -->
+      <div class="bayes-row">
+        <div class="bayes-card">
+          <p class="prob-label">OKC Bayesian Strength</p>
+          <p class="bayes-mean">+11.1 <span class="bayes-std">&plusmn; 1.5</span></p>
+          <p class="prob-detail">Confidence: <strong>high</strong> &middot; Volatility: 1.4</p>
+        </div>
+        <div class="bayes-card">
+          <p class="prob-label">DET Bayesian Strength</p>
+          <p class="bayes-mean">+8.98 <span class="bayes-std">&plusmn; 1.9</span></p>
+          <p class="prob-detail">Confidence: <strong>high</strong> &middot; Volatility: 3.7</p>
+        </div>
+      </div>
+    </div>
+    
+            
+    <div class="section-block">
+      <h3 class="section-title">Stake.com Odds</h3>
+
+      <div class="odds-grid">
+        <div class="odds-table-wrap">
+          <p class="odds-subtitle">Moneyline</p>
+          <table class="odds-table">
+            <thead>
+              <tr>
+                <th>Team</th><th>Decimal</th><th>American</th>
+                <th>Implied %</th><th>Model %</th><th>Edge</th>
+              </tr>
+            </thead>
+            <tbody>
+        <tr class="edge-neg">
+          <td>Oklahoma City Thunder</td>
+          <td class="mono">1.18</td>
+          <td class="mono">-556</td>
+          <td class="mono">84.8%</td>
+          <td class="mono">69.4%</td>
+          <td class="mono edge-cell edge-neg">-15.3%</td>
+        </tr>
+        
+        <tr class="edge-pos">
+          <td>Detroit Pistons</td>
+          <td class="mono">4.85</td>
+          <td class="mono">+385</td>
+          <td class="mono">20.6%</td>
+          <td class="mono">30.6%</td>
+          <td class="mono edge-cell edge-pos">+10.0%</td>
+        </tr>
+        </tbody>
+          </table>
+        </div>
+
+        <div class="odds-table-wrap">
+          <p class="odds-subtitle">Spreads</p>
+          <table class="odds-table">
+            <thead>
+              <tr><th>Line</th><th>Decimal</th><th>American</th><th>Implied %</th></tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td>Oklahoma City Thunder (-3.5)</td>
+              <td class="mono">1.35</td>
+              <td class="mono">-286</td>
+              <td class="mono">74.1%</td>
+            </tr>
+            
+            <tr>
+              <td>Detroit Pistons (3.5)</td>
+              <td class="mono">3.05</td>
+              <td class="mono">+205</td>
+              <td class="mono">32.8%</td>
+            </tr>
+            
+            <tr>
+              <td>Oklahoma City Thunder (-4.5)</td>
+              <td class="mono">1.50</td>
+              <td class="mono">-200</td>
+              <td class="mono">66.7%</td>
+            </tr>
+            
+            <tr>
+              <td>Detroit Pistons (4.5)</td>
+              <td class="mono">2.55</td>
+              <td class="mono">+155</td>
+              <td class="mono">39.2%</td>
+            </tr>
+            
+            <tr>
+              <td>Oklahoma City Thunder (-5.5)</td>
+              <td class="mono">1.65</td>
+              <td class="mono">-154</td>
+              <td class="mono">60.6%</td>
+            </tr>
+            
+            <tr>
+              <td>Detroit Pistons (5.5)</td>
+              <td class="mono">2.20</td>
+              <td class="mono">+120</td>
+              <td class="mono">45.5%</td>
+            </tr>
+            
+            <tr>
+              <td>Oklahoma City Thunder (-6.5)</td>
+              <td class="mono">1.90</td>
+              <td class="mono">-111</td>
+              <td class="mono">52.6%</td>
+            </tr>
+            
+            <tr>
+              <td>Detroit Pistons (6.5)</td>
+              <td class="mono">1.90</td>
+              <td class="mono">-111</td>
+              <td class="mono">52.6%</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="odds-table-wrap">
+          <p class="odds-subtitle">Totals</p>
+          <table class="odds-table">
+            <thead>
+              <tr><th>Line</th><th>Decimal</th><th>American</th><th>Implied %</th></tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td>Over 209.5</td>
+              <td class="mono">1.55</td>
+              <td class="mono">-182</td>
+              <td class="mono">64.5%</td>
+            </tr>
+            
+            <tr>
+              <td>Under 209.5</td>
+              <td class="mono">2.40</td>
+              <td class="mono">+140</td>
+              <td class="mono">41.7%</td>
+            </tr>
+            
+            <tr>
+              <td>Over 210.5</td>
+              <td class="mono">1.70</td>
+              <td class="mono">-143</td>
+              <td class="mono">58.8%</td>
+            </tr>
+            
+            <tr>
+              <td>Under 210.5</td>
+              <td class="mono">2.15</td>
+              <td class="mono">+115</td>
+              <td class="mono">46.5%</td>
+            </tr>
+            
+            <tr>
+              <td>Over 211.5</td>
+              <td class="mono">1.85</td>
+              <td class="mono">-118</td>
+              <td class="mono">54.0%</td>
+            </tr>
+            
+            <tr>
+              <td>Under 211.5</td>
+              <td class="mono">1.95</td>
+              <td class="mono">-105</td>
+              <td class="mono">51.3%</td>
+            </tr>
+            
+            <tr>
+              <td>Over 212.5</td>
+              <td class="mono">2.00</td>
+              <td class="mono">+100</td>
+              <td class="mono">50.0%</td>
+            </tr>
+            
+            <tr>
+              <td>Under 212.5</td>
+              <td class="mono">1.80</td>
+              <td class="mono">-125</td>
+              <td class="mono">55.6%</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+            
+    <div class="section-block">
+      <h3 class="section-title">Team Comparison</h3>
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th class="comp-th-team">DET</th>
+            <th class="comp-th-stat">Stat</th>
+            <th class="comp-th-team">OKC</th>
+          </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td class="comp-val ">117.0 <span class="rank-tag">#9 (top 10)</span></td>
+          <td class="comp-label">ORTG</td>
+          <td class="comp-val ">117.3 <span class="rank-tag">#7 (top 10)</span></td>
+        </tr>
+        
+        <tr>
+          <td class="comp-val rank-top">108.7 <span class="rank-tag">#2 (elite)</span></td>
+          <td class="comp-label">DRTG</td>
+          <td class="comp-val rank-top">106.3 <span class="rank-tag">#1 (elite)</span></td>
+        </tr>
+        
+        <tr>
+          <td class="comp-val rank-top">+8.3 <span class="rank-tag">#2 (elite)</span></td>
+          <td class="comp-label">Net Rating</td>
+          <td class="comp-val rank-top">+11.0 <span class="rank-tag">#1 (elite)</span></td>
+        </tr>
+        
+        <tr>
+          <td class="comp-val ">117.5 <span class="rank-tag">#8 (top 10)</span></td>
+          <td class="comp-label">PPG</td>
+          <td class="comp-val rank-top">118.7 <span class="rank-tag">#5 (top 5)</span></td>
+        </tr>
+        
+        <tr>
+          <td class="comp-val ">48.2% </td>
+          <td class="comp-label">FG%</td>
+          <td class="comp-val ">48.2% </td>
+        </tr>
+        
+        <tr>
+          <td class="comp-val ">35.0% </td>
+          <td class="comp-label">3PT%</td>
+          <td class="comp-val ">36.0% </td>
+        </tr>
+        
+        <tr>
+          <td class="comp-val ">76.2% </td>
+          <td class="comp-label">FT%</td>
+          <td class="comp-val ">81.9% </td>
+        </tr>
+        
+        <tr>
+          <td class="comp-val ">57.9% <span class="rank-tag">#14 (above avg)</span></td>
+          <td class="comp-label">TS%</td>
+          <td class="comp-val rank-top">59.7% <span class="rank-tag">#4 (top 5)</span></td>
+        </tr>
+        
+        <tr>
+          <td class="comp-val ">54.3% <span class="rank-tag">#15 (above avg)</span></td>
+          <td class="comp-label">eFG%</td>
+          <td class="comp-val ">55.8% <span class="rank-tag">#7 (top 10)</span></td>
+        </tr>
+        
+        <tr>
+          <td class="comp-val ">27.3 <span class="rank-tag">#12 (above avg)</span></td>
+          <td class="comp-label">APG</td>
+          <td class="comp-val ">25.4 <span class="rank-tag">#20 (below avg)</span></td>
+        </tr>
+        
+        <tr>
+          <td class="comp-val ">15.0 <span class="rank-tag">#20 (below avg)</span></td>
+          <td class="comp-label">TOV/g</td>
+          <td class="comp-val rank-top">12.5 <span class="rank-tag">#2 (elite)</span></td>
+        </tr>
+        
+        <tr>
+          <td class="comp-val rank-top">35.4% <span class="rank-tag">#3 (elite)</span></td>
+          <td class="comp-label">OREB%</td>
+          <td class="comp-val rank-bot">26.4% <span class="rank-tag">#29 (bottom 3)</span></td>
+        </tr>
+        
+        <tr>
+          <td class="comp-val ">100.0 <span class="rank-tag">#18 (below avg)</span></td>
+          <td class="comp-label">Pace</td>
+          <td class="comp-val ">100.4 <span class="rank-tag">#14 (above avg)</span></td>
+        </tr>
+        
+        <tr>
+          <td class="comp-val rank-top">10.5 <span class="rank-tag">#1 (elite)</span></td>
+          <td class="comp-label">SPG</td>
+          <td class="comp-val rank-top">9.6 <span class="rank-tag">#4 (top 5)</span></td>
+        </tr>
+        
+        <tr>
+          <td class="comp-val rank-top">6.3 <span class="rank-tag">#1 (elite)</span></td>
+          <td class="comp-label">BPG</td>
+          <td class="comp-val ">5.5 <span class="rank-tag">#6 (top 10)</span></td>
+        </tr>
+        
+        <tr>
+          <td class="comp-val ">68.9% <span class="rank-tag">#19 (below avg)</span></td>
+          <td class="comp-label">DREB%</td>
+          <td class="comp-val ">69.6% <span class="rank-tag">#13 (above avg)</span></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    
+            
+    <div class="section-block">
+      <h3 class="section-title">Four Factors Matchup</h3>
+      <div class="ff-summary">
+        <span class="ff-grade">Grade: <strong>B</strong></span>
+        <span class="ff-favors">Favors: <strong>DET</strong></span>
+        <span class="ff-scores">DET off score: 0.0312 &middot; OKC off score: 0.0110</span>
+      </div>
+
+      <div class="ff-tables">
+        <div class="ff-table-wrap">
+          <p class="odds-subtitle">DET Offense vs OKC Defense</p>
+          <table class="odds-table">
+            <thead>
+              <tr><th>Factor</th><th>Offense</th><th>Defense</th><th>Edge</th><th>Weight</th></tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td>eFG%</td>
+              <td class="mono">54.3%</td>
+              <td class="mono">51.6%</td>
+              <td class="mono">+2.7%</td>
+              <td class="mono">40%</td>
+            </tr>
+            
+            <tr>
+              <td>TOV%</td>
+              <td class="mono">14.9%</td>
+              <td class="mono">16.6%</td>
+              <td class="mono">+1.7%</td>
+              <td class="mono">25%</td>
+            </tr>
+            
+            <tr>
+              <td>OREB%</td>
+              <td class="mono">35.4%</td>
+              <td class="mono">30.4%</td>
+              <td class="mono">+5.0%</td>
+              <td class="mono">20%</td>
+            </tr>
+            
+            <tr>
+              <td>FT Rate</td>
+              <td class="mono">29.2%</td>
+              <td class="mono">25.1%</td>
+              <td class="mono">+4.1%</td>
+              <td class="mono">15%</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="ff-table-wrap">
+          <p class="odds-subtitle">OKC Offense vs DET Defense</p>
+          <table class="odds-table">
+            <thead>
+              <tr><th>Factor</th><th>Offense</th><th>Defense</th><th>Edge</th><th>Weight</th></tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td>eFG%</td>
+              <td class="mono">55.8%</td>
+              <td class="mono">51.6%</td>
+              <td class="mono">+4.2%</td>
+              <td class="mono">40%</td>
+            </tr>
+            
+            <tr>
+              <td>TOV%</td>
+              <td class="mono">12.4%</td>
+              <td class="mono">16.9%</td>
+              <td class="mono">+4.5%</td>
+              <td class="mono">25%</td>
+            </tr>
+            
+            <tr>
+              <td>OREB%</td>
+              <td class="mono">26.4%</td>
+              <td class="mono">31.1%</td>
+              <td class="mono">-4.7%</td>
+              <td class="mono">20%</td>
+            </tr>
+            
+            <tr>
+              <td>FT Rate</td>
+              <td class="mono">26.8%</td>
+              <td class="mono">31.9%</td>
+              <td class="mono">-5.1%</td>
+              <td class="mono">15%</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+            
+    <div class="section-block">
+      <h3 class="section-title">Insight Flags</h3>
+      <div class="flags-container">
+        <div class="flag-box" style="border-left-color:#2A7D6F">
+          <span class="flag-icon" style="color:#2A7D6F">&#x25C6;</span>
+          <span class="flag-text">DET has a 2.7% edge in shooting efficiency</span>
+          <span class="flag-type" style="color:#2A7D6F">FOUR_FACTORS</span>
+        </div>
+        
+        <div class="flag-box" style="border-left-color:#2A7D6F">
+          <span class="flag-icon" style="color:#2A7D6F">&#x25C6;</span>
+          <span class="flag-text">DET has a 5.0% edge in offensive rebounding</span>
+          <span class="flag-type" style="color:#2A7D6F">FOUR_FACTORS</span>
+        </div>
+        
+        <div class="flag-box" style="border-left-color:#2A7D6F">
+          <span class="flag-icon" style="color:#2A7D6F">&#x25C6;</span>
+          <span class="flag-text">DET has a 4.1% edge in getting to the line</span>
+          <span class="flag-type" style="color:#2A7D6F">FOUR_FACTORS</span>
+        </div>
+        
+        <div class="flag-box" style="border-left-color:#C8831A">
+          <span class="flag-icon" style="color:#C8831A">&#x21BA;</span>
+          <span class="flag-text">DET forces turnovers (16.9%) vs OKC's offense (12.4%)</span>
+          <span class="flag-type" style="color:#C8831A">TURNOVERS</span>
+        </div>
+        
+        <div class="flag-box" style="border-left-color:#D4603A">
+          <span class="flag-icon" style="color:#D4603A">&#x2191;</span>
+          <span class="flag-text">DET is HOT — L5 net rating significantly above season average</span>
+          <span class="flag-type" style="color:#D4603A">TREND</span>
+        </div>
+        
+        <div class="flag-box" style="border-left-color:#2A7D6F">
+          <span class="flag-icon" style="color:#2A7D6F">&#x25CE;</span>
+          <span class="flag-text">OKC shoots well and DET allows high eFG% — shooting advantage</span>
+          <span class="flag-type" style="color:#2A7D6F">SHOOTING</span>
+        </div>
+        </div>
+    </div>
+    
+            
+    <div class="section-block props-section">
+      <h3 class="section-title">Player Props <span class="section-badge">KEY SECTION</span></h3>
+      <div class="props-table-wrap">
+        <table class="props-table">
+          <thead>
+            <tr>
+              <th>Player</th>
+              <th colspan="4" class="group-header">Points</th>
+              <th colspan="4" class="group-header">Rebounds</th>
+              <th colspan="4" class="group-header">Assists</th>
+              <th>Mult</th>
+            </tr>
+            <tr class="sub-header">
+              <th></th>
+              <th>Avg</th><th>Proj</th><th>Edge</th><th>Dir</th>
+              <th>Avg</th><th>Proj</th><th>Edge</th><th>Dir</th>
+              <th>Avg</th><th>Proj</th><th>Edge</th><th>Dir</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+        <tr class="prop-actionable">
+          <td class="prop-name">
+            <strong>Shai Gilgeous-Alexander</strong>
+            <span class="prop-team">OKC</span>
+          </td>
+          <td class="mono">31.4</td>
+          <td class="mono"><strong>30.8</strong></td>
+          <td class="mono dir-under">-0.6</td>
+          <td class="dir-under">UNDER</td>
+          <td class="mono">4.3</td>
+          <td class="mono"><strong>4.3</strong></td>
+          <td class="mono dir-neutral">0.0</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">6.5</td>
+          <td class="mono"><strong>6.5</strong></td>
+          <td class="mono dir-neutral">0.0</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">0.96x</td>
+        </tr>
+        
+        <tr class="">
+          <td class="prop-name">
+            <strong>Chet Holmgren</strong>
+            <span class="prop-team">OKC</span>
+          </td>
+          <td class="mono">17.1</td>
+          <td class="mono"><strong>16.8</strong></td>
+          <td class="mono dir-neutral">-0.3</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">8.9</td>
+          <td class="mono"><strong>8.9</strong></td>
+          <td class="mono dir-neutral">0.0</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">1.7</td>
+          <td class="mono"><strong>1.7</strong></td>
+          <td class="mono dir-neutral">0.0</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">0.96x</td>
+        </tr>
+        
+        <tr class="">
+          <td class="prop-name">
+            <strong>Jalen Williams</strong>
+            <span class="prop-team">OKC</span>
+          </td>
+          <td class="mono">17.3</td>
+          <td class="mono"><strong>17.0</strong></td>
+          <td class="mono dir-neutral">-0.3</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">4.5</td>
+          <td class="mono"><strong>4.5</strong></td>
+          <td class="mono dir-neutral">0.0</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">5.3</td>
+          <td class="mono"><strong>5.3</strong></td>
+          <td class="mono dir-neutral">0.0</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">0.96x</td>
+        </tr>
+        
+        <tr class="">
+          <td class="prop-name">
+            <strong>Luguentz Dort</strong>
+            <span class="prop-team">OKC</span>
+          </td>
+          <td class="mono">8.4</td>
+          <td class="mono"><strong>8.3</strong></td>
+          <td class="mono dir-neutral">-0.1</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">3.7</td>
+          <td class="mono"><strong>3.7</strong></td>
+          <td class="mono dir-neutral">0.0</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">1.2</td>
+          <td class="mono"><strong>1.2</strong></td>
+          <td class="mono dir-neutral">0.0</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">0.96x</td>
+        </tr>
+        
+        <tr class="">
+          <td class="prop-name">
+            <strong>Cason Wallace</strong>
+            <span class="prop-team">OKC</span>
+          </td>
+          <td class="mono">8.6</td>
+          <td class="mono"><strong>8.4</strong></td>
+          <td class="mono dir-neutral">-0.2</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">3.1</td>
+          <td class="mono"><strong>3.1</strong></td>
+          <td class="mono dir-neutral">0.0</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">2.7</td>
+          <td class="mono"><strong>2.7</strong></td>
+          <td class="mono dir-neutral">0.0</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">0.96x</td>
+        </tr>
+        
+        <tr class="prop-actionable">
+          <td class="prop-name">
+            <strong>Cade Cunningham</strong>
+            <span class="prop-team">DET</span>
+          </td>
+          <td class="mono">24.5</td>
+          <td class="mono"><strong>23.9</strong></td>
+          <td class="mono dir-under">-0.6</td>
+          <td class="dir-under">UNDER</td>
+          <td class="mono">5.6</td>
+          <td class="mono"><strong>5.6</strong></td>
+          <td class="mono dir-neutral">0.0</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">9.9</td>
+          <td class="mono"><strong>9.9</strong></td>
+          <td class="mono dir-neutral">0.0</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">0.95x</td>
+        </tr>
+        
+        <tr class="">
+          <td class="prop-name">
+            <strong>Tobias Harris</strong>
+            <span class="prop-team">DET</span>
+          </td>
+          <td class="mono">13.4</td>
+          <td class="mono"><strong>13.1</strong></td>
+          <td class="mono dir-neutral">-0.3</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">5.2</td>
+          <td class="mono"><strong>5.2</strong></td>
+          <td class="mono dir-neutral">0.0</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">2.5</td>
+          <td class="mono"><strong>2.5</strong></td>
+          <td class="mono dir-neutral">0.0</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">0.95x</td>
+        </tr>
+        
+        <tr class="prop-actionable">
+          <td class="prop-name">
+            <strong>Jalen Duren</strong>
+            <span class="prop-team">DET</span>
+          </td>
+          <td class="mono">19.3</td>
+          <td class="mono"><strong>18.8</strong></td>
+          <td class="mono dir-under">-0.5</td>
+          <td class="dir-under">UNDER</td>
+          <td class="mono">10.6</td>
+          <td class="mono"><strong>10.6</strong></td>
+          <td class="mono dir-neutral">0.0</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">1.8</td>
+          <td class="mono"><strong>1.8</strong></td>
+          <td class="mono dir-neutral">0.0</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">0.95x</td>
+        </tr>
+        
+        <tr class="">
+          <td class="prop-name">
+            <strong>Duncan Robinson</strong>
+            <span class="prop-team">DET</span>
+          </td>
+          <td class="mono">11.9</td>
+          <td class="mono"><strong>11.6</strong></td>
+          <td class="mono dir-neutral">-0.3</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">2.7</td>
+          <td class="mono"><strong>2.7</strong></td>
+          <td class="mono dir-neutral">0.0</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">2.1</td>
+          <td class="mono"><strong>2.1</strong></td>
+          <td class="mono dir-neutral">0.0</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">0.95x</td>
+        </tr>
+        
+        <tr class="">
+          <td class="prop-name">
+            <strong>Ausar Thompson</strong>
+            <span class="prop-team">DET</span>
+          </td>
+          <td class="mono">10.0</td>
+          <td class="mono"><strong>9.7</strong></td>
+          <td class="mono dir-neutral">-0.3</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">5.7</td>
+          <td class="mono"><strong>5.7</strong></td>
+          <td class="mono dir-neutral">0.0</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">2.9</td>
+          <td class="mono"><strong>2.9</strong></td>
+          <td class="mono dir-neutral">0.0</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">0.95x</td>
+        </tr>
+        </tbody>
+        </table>
+      </div>
+    </div>
+    
+            
+    <div class="section-block">
+      <h3 class="section-title">Recent Form</h3>
+      <div class="form-grid">
+        <div class="form-card">
+          <p class="form-team">DET</p>
+          <div class="form-stats">
+            <div class="form-stat">
+              <span class="form-label">L5</span>
+              <span class="form-val">4-1</span>
+            </div>
+            <div class="form-stat">
+              <span class="form-label">L10</span>
+              <span class="form-val">8-2</span>
+            </div>
+            <div class="form-stat">
+              <span class="form-label">L5 Net</span>
+              <span class="form-val">+12.0</span>
+            </div>
+            <div class="form-stat">
+              <span class="form-label">L10 Net</span>
+              <span class="form-val">+12.3</span>
+            </div>
+          </div>
+          <p class="form-trend">hot (L5 significantly above season average)</p>
+        </div>
+        <div class="form-card">
+          <p class="form-team">OKC</p>
+          <div class="form-stats">
+            <div class="form-stat">
+              <span class="form-label">L5</span>
+              <span class="form-val">4-1</span>
+            </div>
+            <div class="form-stat">
+              <span class="form-label">L10</span>
+              <span class="form-val">9-1</span>
+            </div>
+            <div class="form-stat">
+              <span class="form-label">L5 Net</span>
+              <span class="form-val">+12.4</span>
+            </div>
+            <div class="form-stat">
+              <span class="form-label">L10 Net</span>
+              <span class="form-val">+11.6</span>
+            </div>
+          </div>
+          <p class="form-trend">trending up</p>
+        </div>
+      </div>
+    </div>
+    
+          </div>
+        </div>
+        
+        <div class="game-section">
+          
+    <div class="game-header">
+      <div class="game-header-teams">
+        <span class="game-team away-team">Washington Wizards</span>
+        <span class="game-at">@</span>
+        <span class="game-team home-team">Los Angeles Lakers</span>
+      </div>
+      <div class="game-header-meta">
+        <span>17-57 vs 48-26</span>
+        <span class="meta-sep">|</span>
+        <span>crypto.com Arena</span>
+        <span class="meta-sep">|</span>
+        <span>10:00 PM ET</span>
+      </div>
+    </div>
+    
+          <div class="game-body">
+            
+    <div class="section-block">
+      <h3 class="section-title">Win Probability</h3>
+      <div class="prob-grid">
+
+        <!-- Elo Model -->
+        <div class="prob-card">
+          <p class="prob-label">Elo Model</p>
+          <div class="prob-bar-container">
+            <div class="prob-bar-away" style="width:10.2%">
+              <span>WAS 10%</span>
+            </div>
+            <div class="prob-bar-home" style="width:89.8%">
+              <span>LAL 90%</span>
+            </div>
+          </div>
+          <p class="prob-detail">Projected spread: <strong>WAS -15.1</strong></p>
+        </div>
+
+        <!-- Logistic Regression -->
+        <div class="prob-card">
+          <p class="prob-label">Logistic Regression</p>
+          <div class="prob-bar-container">
+            <div class="prob-bar-away" style="width:0.8%">
+              <span>WAS 1%</span>
+            </div>
+            <div class="prob-bar-home" style="width:99.2%">
+              <span>LAL 99%</span>
+            </div>
+          </div>
+          <p class="prob-detail">Projected spread: <strong>WAS -13.8</strong> &middot; 19 features</p>
+        </div>
+
+        <!-- Monte Carlo -->
+        <div class="prob-card">
+          <p class="prob-label">Monte Carlo (10,000 sims)</p>
+          <div class="prob-bar-container">
+            <div class="prob-bar-away" style="width:28.6%">
+              <span>WAS 29%</span>
+            </div>
+            <div class="prob-bar-home" style="width:71.4%">
+              <span>LAL 71%</span>
+            </div>
+          </div>
+          <div class="mc-details">
+            <span>Mean margin: <strong>+9.5</strong></span>
+            <span>90% CI: [-18.5, 37.4]</span>
+            <span>P(close): 19%</span>
+            <span>P(blowout LAL): 37%</span>
+            <span>P(blowout WAS): 8%</span>
+          </div>
+        </div>
+
+        <!-- Score Projection -->
+        <div class="prob-card">
+          <p class="prob-label">Score Projection</p>
+          <div class="score-proj">
+            <span class="score-team">WAS <strong>112.2</strong></span>
+            <span class="score-sep">-</span>
+            <span class="score-team">LAL <strong>121.7</strong></span>
+          </div>
+          <p class="prob-detail">Projected total: <strong>234.0</strong></p>
+        </div>
+      </div>
+
+      <!-- Bayesian Strength -->
+      <div class="bayes-row">
+        <div class="bayes-card">
+          <p class="prob-label">LAL Bayesian Strength</p>
+          <p class="bayes-mean">+2.3 <span class="bayes-std">&plusmn; 1.9</span></p>
+          <p class="prob-detail">Confidence: <strong>high</strong> &middot; Volatility: 4.0</p>
+        </div>
+        <div class="bayes-card">
+          <p class="prob-label">WAS Bayesian Strength</p>
+          <p class="bayes-mean">-11.38 <span class="bayes-std">&plusmn; 1.5</span></p>
+          <p class="prob-detail">Confidence: <strong>high</strong> &middot; Volatility: 1.9</p>
+        </div>
+      </div>
+    </div>
+    
+            
+    <div class="section-block">
+      <h3 class="section-title">Stake.com Odds</h3>
+
+      <div class="odds-grid">
+        <div class="odds-table-wrap">
+          <p class="odds-subtitle">Moneyline</p>
+          <table class="odds-table">
+            <thead>
+              <tr>
+                <th>Team</th><th>Decimal</th><th>American</th>
+                <th>Implied %</th><th>Model %</th><th>Edge</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <div class="odds-table-wrap">
+          <p class="odds-subtitle">Spreads</p>
+          <table class="odds-table">
+            <thead>
+              <tr><th>Line</th><th>Decimal</th><th>American</th><th>Implied %</th></tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td>Los Angeles Lakers (-18.5)</td>
+              <td class="mono">1.55</td>
+              <td class="mono">-182</td>
+              <td class="mono">64.5%</td>
+            </tr>
+            
+            <tr>
+              <td>Washington Wizards (18.5)</td>
+              <td class="mono">2.40</td>
+              <td class="mono">+140</td>
+              <td class="mono">41.7%</td>
+            </tr>
+            
+            <tr>
+              <td>Los Angeles Lakers (-19.5)</td>
+              <td class="mono">1.65</td>
+              <td class="mono">-154</td>
+              <td class="mono">60.6%</td>
+            </tr>
+            
+            <tr>
+              <td>Washington Wizards (19.5)</td>
+              <td class="mono">2.20</td>
+              <td class="mono">+120</td>
+              <td class="mono">45.5%</td>
+            </tr>
+            
+            <tr>
+              <td>Los Angeles Lakers (-20.5)</td>
+              <td class="mono">1.75</td>
+              <td class="mono">-133</td>
+              <td class="mono">57.1%</td>
+            </tr>
+            
+            <tr>
+              <td>Washington Wizards (20.5)</td>
+              <td class="mono">2.00</td>
+              <td class="mono">+100</td>
+              <td class="mono">50.0%</td>
+            </tr>
+            
+            <tr>
+              <td>Los Angeles Lakers (-21.5)</td>
+              <td class="mono">1.90</td>
+              <td class="mono">-111</td>
+              <td class="mono">52.6%</td>
+            </tr>
+            
+            <tr>
+              <td>Washington Wizards (21.5)</td>
+              <td class="mono">1.85</td>
+              <td class="mono">-118</td>
+              <td class="mono">54.0%</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="odds-table-wrap">
+          <p class="odds-subtitle">Totals</p>
+          <table class="odds-table">
+            <thead>
+              <tr><th>Line</th><th>Decimal</th><th>American</th><th>Implied %</th></tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td>Over 218.5</td>
+              <td class="mono">1.55</td>
+              <td class="mono">-182</td>
+              <td class="mono">64.5%</td>
+            </tr>
+            
+            <tr>
+              <td>Under 218.5</td>
+              <td class="mono">2.45</td>
+              <td class="mono">+145</td>
+              <td class="mono">40.8%</td>
+            </tr>
+            
+            <tr>
+              <td>Over 219.5</td>
+              <td class="mono">1.60</td>
+              <td class="mono">-167</td>
+              <td class="mono">62.5%</td>
+            </tr>
+            
+            <tr>
+              <td>Under 219.5</td>
+              <td class="mono">2.25</td>
+              <td class="mono">+125</td>
+              <td class="mono">44.4%</td>
+            </tr>
+            
+            <tr>
+              <td>Over 220.5</td>
+              <td class="mono">1.70</td>
+              <td class="mono">-143</td>
+              <td class="mono">58.8%</td>
+            </tr>
+            
+            <tr>
+              <td>Under 220.5</td>
+              <td class="mono">2.10</td>
+              <td class="mono">+110</td>
+              <td class="mono">47.6%</td>
+            </tr>
+            
+            <tr>
+              <td>Over 221.5</td>
+              <td class="mono">1.85</td>
+              <td class="mono">-118</td>
+              <td class="mono">54.0%</td>
+            </tr>
+            
+            <tr>
+              <td>Under 221.5</td>
+              <td class="mono">1.95</td>
+              <td class="mono">-105</td>
+              <td class="mono">51.3%</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+            
+    <div class="section-block">
+      <h3 class="section-title">Team Comparison</h3>
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th class="comp-th-team">WAS</th>
+            <th class="comp-th-stat">Stat</th>
+            <th class="comp-th-team">LAL</th>
+          </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td class="comp-val rank-bot">109.5 <span class="rank-tag">#29 (bottom 3)</span></td>
+          <td class="comp-label">ORTG</td>
+          <td class="comp-val ">117.2 <span class="rank-tag">#8 (top 10)</span></td>
+        </tr>
+        
+        <tr>
+          <td class="comp-val rank-bot">120.7 <span class="rank-tag">#29 (bottom 3)</span></td>
+          <td class="comp-label">DRTG</td>
+          <td class="comp-val ">115.7 <span class="rank-tag">#20 (below avg)</span></td>
+        </tr>
+        
+        <tr>
+          <td class="comp-val rank-bot">-11.2 <span class="rank-tag">#30 (bottom 3)</span></td>
+          <td class="comp-label">Net Rating</td>
+          <td class="comp-val ">+1.5 <span class="rank-tag">#15 (above avg)</span></td>
+        </tr>
+        
+        <tr>
+          <td class="comp-val rank-bot">112.6 <span class="rank-tag">#26 (bottom 5)</span></td>
+          <td class="comp-label">PPG</td>
+          <td class="comp-val ">116.6 <span class="rank-tag">#11 (above avg)</span></td>
+        </tr>
+        
+        <tr>
+          <td class="comp-val ">46.2% </td>
+          <td class="comp-label">FG%</td>
+          <td class="comp-val ">50.0% </td>
+        </tr>
+        
+        <tr>
+          <td class="comp-val ">35.9% </td>
+          <td class="comp-label">3PT%</td>
+          <td class="comp-val ">35.8% </td>
+        </tr>
+        
+        <tr>
+          <td class="comp-val ">76.8% </td>
+          <td class="comp-label">FT%</td>
+          <td class="comp-val ">76.5% </td>
+        </tr>
+        
+        <tr>
+          <td class="comp-val rank-bot">56.6% <span class="rank-tag">#28 (bottom 5)</span></td>
+          <td class="comp-label">TS%</td>
+          <td class="comp-val rank-top">60.9% <span class="rank-tag">#2 (elite)</span></td>
+        </tr>
+        
+        <tr>
+          <td class="comp-val rank-bot">53.4% <span class="rank-tag">#22 (bottom 10)</span></td>
+          <td class="comp-label">eFG%</td>
+          <td class="comp-val rank-top">57.2% <span class="rank-tag">#2 (elite)</span></td>
+        </tr>
+        
+        <tr>
+          <td class="comp-val rank-bot">25.0 <span class="rank-tag">#26 (bottom 5)</span></td>
+          <td class="comp-label">APG</td>
+          <td class="comp-val ">25.5 <span class="rank-tag">#19 (below avg)</span></td>
+        </tr>
+        
+        <tr>
+          <td class="comp-val rank-bot">15.7 <span class="rank-tag">#27 (bottom 5)</span></td>
+          <td class="comp-label">TOV/g</td>
+          <td class="comp-val ">14.4 <span class="rank-tag">#16 (below avg)</span></td>
+        </tr>
+        
+        <tr>
+          <td class="comp-val rank-bot">28.5% <span class="rank-tag">#24 (bottom 10)</span></td>
+          <td class="comp-label">OREB%</td>
+          <td class="comp-val rank-bot">28.6% <span class="rank-tag">#23 (bottom 10)</span></td>
+        </tr>
+        
+        <tr>
+          <td class="comp-val ">102.3 <span class="rank-tag">#6 (top 10)</span></td>
+          <td class="comp-label">Pace</td>
+          <td class="comp-val rank-bot">99.3 <span class="rank-tag">#22 (bottom 10)</span></td>
+        </tr>
+        
+        <tr>
+          <td class="comp-val rank-bot">7.8 <span class="rank-tag">#22 (bottom 10)</span></td>
+          <td class="comp-label">SPG</td>
+          <td class="comp-val ">8.4 <span class="rank-tag">#16 (below avg)</span></td>
+        </tr>
+        
+        <tr>
+          <td class="comp-val rank-top">5.7 <span class="rank-tag">#5 (top 5)</span></td>
+          <td class="comp-label">BPG</td>
+          <td class="comp-val rank-bot">4.3 <span class="rank-tag">#24 (bottom 10)</span></td>
+        </tr>
+        
+        <tr>
+          <td class="comp-val rank-bot">66.3% <span class="rank-tag">#30 (bottom 3)</span></td>
+          <td class="comp-label">DREB%</td>
+          <td class="comp-val ">69.9% <span class="rank-tag">#12 (above avg)</span></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    
+            
+    <div class="section-block">
+      <h3 class="section-title">Four Factors Matchup</h3>
+      <div class="ff-summary">
+        <span class="ff-grade">Grade: <strong>C+</strong></span>
+        <span class="ff-favors">Favors: <strong>LAL</strong></span>
+        <span class="ff-scores">WAS off score: -0.0147 &middot; LAL off score: -0.0026</span>
+      </div>
+
+      <div class="ff-tables">
+        <div class="ff-table-wrap">
+          <p class="odds-subtitle">WAS Offense vs LAL Defense</p>
+          <table class="odds-table">
+            <thead>
+              <tr><th>Factor</th><th>Offense</th><th>Defense</th><th>Edge</th><th>Weight</th></tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td>eFG%</td>
+              <td class="mono">53.4%</td>
+              <td class="mono">55.7%</td>
+              <td class="mono">-2.3%</td>
+              <td class="mono">40%</td>
+            </tr>
+            
+            <tr>
+              <td>TOV%</td>
+              <td class="mono">15.3%</td>
+              <td class="mono">14.8%</td>
+              <td class="mono">-0.5%</td>
+              <td class="mono">25%</td>
+            </tr>
+            
+            <tr>
+              <td>OREB%</td>
+              <td class="mono">28.5%</td>
+              <td class="mono">30.1%</td>
+              <td class="mono">-1.6%</td>
+              <td class="mono">20%</td>
+            </tr>
+            
+            <tr>
+              <td>FT Rate</td>
+              <td class="mono">23.6%</td>
+              <td class="mono">24.3%</td>
+              <td class="mono">-0.7%</td>
+              <td class="mono">15%</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="ff-table-wrap">
+          <p class="odds-subtitle">LAL Offense vs WAS Defense</p>
+          <table class="odds-table">
+            <thead>
+              <tr><th>Factor</th><th>Offense</th><th>Defense</th><th>Edge</th><th>Weight</th></tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td>eFG%</td>
+              <td class="mono">57.2%</td>
+              <td class="mono">55.6%</td>
+              <td class="mono">+1.6%</td>
+              <td class="mono">40%</td>
+            </tr>
+            
+            <tr>
+              <td>TOV%</td>
+              <td class="mono">14.5%</td>
+              <td class="mono">13.3%</td>
+              <td class="mono">-1.2%</td>
+              <td class="mono">25%</td>
+            </tr>
+            
+            <tr>
+              <td>OREB%</td>
+              <td class="mono">28.6%</td>
+              <td class="mono">33.7%</td>
+              <td class="mono">-5.1%</td>
+              <td class="mono">20%</td>
+            </tr>
+            
+            <tr>
+              <td>FT Rate</td>
+              <td class="mono">32.0%</td>
+              <td class="mono">29.2%</td>
+              <td class="mono">+2.8%</td>
+              <td class="mono">15%</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+            
+    <div class="section-block">
+      <h3 class="section-title">Insight Flags</h3>
+      <div class="flags-container">
+        <div class="flag-box" style="border-left-color:#2A7D6F">
+          <span class="flag-icon" style="color:#2A7D6F">&#x25C6;</span>
+          <span class="flag-text">LAL has a 2.3% edge in shooting efficiency</span>
+          <span class="flag-type" style="color:#2A7D6F">FOUR_FACTORS</span>
+        </div>
+        
+        <div class="flag-box" style="border-left-color:#C8831A">
+          <span class="flag-icon" style="color:#C8831A">&#x25B6;</span>
+          <span class="flag-text">Pace mismatch: WAS vs LAL (3.1 possessions/game gap) — affects total</span>
+          <span class="flag-type" style="color:#C8831A">PACE</span>
+        </div>
+        
+        <div class="flag-box" style="border-left-color:#D4603A">
+          <span class="flag-icon" style="color:#D4603A">&#x2191;</span>
+          <span class="flag-text">LAL is HOT — L5 net rating significantly above season average</span>
+          <span class="flag-type" style="color:#D4603A">TREND</span>
+        </div>
+        
+        <div class="flag-box" style="border-left-color:#D4603A">
+          <span class="flag-icon" style="color:#D4603A">&#x26A0;</span>
+          <span class="flag-text">Large talent gap: LAL (+1.5 net) vs WAS (-11.2 net)</span>
+          <span class="flag-type" style="color:#D4603A">MISMATCH</span>
+        </div>
+        
+        <div class="flag-box" style="border-left-color:#2A7D6F">
+          <span class="flag-icon" style="color:#2A7D6F">&#x2605;</span>
+          <span class="flag-text">LAL is offense-first (ORTG 117.2, DRTG 115.7) — high-scoring games likely</span>
+          <span class="flag-type" style="color:#2A7D6F">IDENTITY</span>
+        </div>
+        
+        <div class="flag-box" style="border-left-color:#2A7D6F">
+          <span class="flag-icon" style="color:#2A7D6F">&#x25CE;</span>
+          <span class="flag-text">Neutral shooting matchup</span>
+          <span class="flag-type" style="color:#2A7D6F">SHOOTING</span>
+        </div>
+        </div>
+    </div>
+    
+            
+    <div class="section-block props-section">
+      <h3 class="section-title">Player Props <span class="section-badge">KEY SECTION</span></h3>
+      <div class="props-table-wrap">
+        <table class="props-table">
+          <thead>
+            <tr>
+              <th>Player</th>
+              <th colspan="4" class="group-header">Points</th>
+              <th colspan="4" class="group-header">Rebounds</th>
+              <th colspan="4" class="group-header">Assists</th>
+              <th>Mult</th>
+            </tr>
+            <tr class="sub-header">
+              <th></th>
+              <th>Avg</th><th>Proj</th><th>Edge</th><th>Dir</th>
+              <th>Avg</th><th>Proj</th><th>Edge</th><th>Dir</th>
+              <th>Avg</th><th>Proj</th><th>Edge</th><th>Dir</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+        <tr class="prop-actionable">
+          <td class="prop-name">
+            <strong>Luka Dončić</strong>
+            <span class="prop-team">LAL</span>
+          </td>
+          <td class="mono">33.7</td>
+          <td class="mono"><strong>35.3</strong></td>
+          <td class="mono dir-over">+1.6</td>
+          <td class="dir-over">OVER</td>
+          <td class="mono">7.8</td>
+          <td class="mono"><strong>7.8</strong></td>
+          <td class="mono dir-neutral">0.0</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">8.2</td>
+          <td class="mono"><strong>8.2</strong></td>
+          <td class="mono dir-neutral">0.0</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">1.09x</td>
+        </tr>
+        
+        <tr class="prop-actionable">
+          <td class="prop-name">
+            <strong>Austin Reaves</strong>
+            <span class="prop-team">LAL</span>
+          </td>
+          <td class="mono">23.6</td>
+          <td class="mono"><strong>24.7</strong></td>
+          <td class="mono dir-over">+1.1</td>
+          <td class="dir-over">OVER</td>
+          <td class="mono">4.7</td>
+          <td class="mono"><strong>4.7</strong></td>
+          <td class="mono dir-neutral">0.0</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">5.5</td>
+          <td class="mono"><strong>5.5</strong></td>
+          <td class="mono dir-neutral">0.0</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">1.09x</td>
+        </tr>
+        
+        <tr class="prop-actionable">
+          <td class="prop-name">
+            <strong>LeBron James</strong>
+            <span class="prop-team">LAL</span>
+          </td>
+          <td class="mono">20.9</td>
+          <td class="mono"><strong>21.9</strong></td>
+          <td class="mono dir-over">+1.0</td>
+          <td class="dir-over">OVER</td>
+          <td class="mono">6.0</td>
+          <td class="mono"><strong>6.0</strong></td>
+          <td class="mono dir-neutral">0.0</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">6.9</td>
+          <td class="mono"><strong>6.9</strong></td>
+          <td class="mono dir-neutral">0.0</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">1.09x</td>
+        </tr>
+        
+        <tr class="">
+          <td class="prop-name">
+            <strong>Marcus Smart</strong>
+            <span class="prop-team">LAL</span>
+          </td>
+          <td class="mono">9.5</td>
+          <td class="mono"><strong>9.9</strong></td>
+          <td class="mono dir-neutral">+0.4</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">2.8</td>
+          <td class="mono"><strong>2.8</strong></td>
+          <td class="mono dir-neutral">0.0</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">2.8</td>
+          <td class="mono"><strong>2.8</strong></td>
+          <td class="mono dir-neutral">0.0</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">1.09x</td>
+        </tr>
+        
+        <tr class="prop-actionable">
+          <td class="prop-name">
+            <strong>Rui Hachimura</strong>
+            <span class="prop-team">LAL</span>
+          </td>
+          <td class="mono">11.1</td>
+          <td class="mono"><strong>11.6</strong></td>
+          <td class="mono dir-over">+0.5</td>
+          <td class="dir-over">OVER</td>
+          <td class="mono">3.2</td>
+          <td class="mono"><strong>3.2</strong></td>
+          <td class="mono dir-neutral">0.0</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">0.8</td>
+          <td class="mono"><strong>0.8</strong></td>
+          <td class="mono dir-neutral">0.0</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">1.09x</td>
+        </tr>
+        
+        <tr class="">
+          <td class="prop-name">
+            <strong>Anthony Davis</strong>
+            <span class="prop-team">WAS</span>
+          </td>
+          <td class="mono">20.4</td>
+          <td class="mono"><strong>20.5</strong></td>
+          <td class="mono dir-neutral">+0.1</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">11.1</td>
+          <td class="mono"><strong>11.1</strong></td>
+          <td class="mono dir-neutral">0.0</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">2.8</td>
+          <td class="mono"><strong>2.8</strong></td>
+          <td class="mono dir-neutral">0.0</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">1.01x</td>
+        </tr>
+        
+        <tr class="">
+          <td class="prop-name">
+            <strong>Leaky Black</strong>
+            <span class="prop-team">WAS</span>
+          </td>
+          <td class="mono">8.1</td>
+          <td class="mono"><strong>8.1</strong></td>
+          <td class="mono dir-neutral">0.0</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">5.9</td>
+          <td class="mono"><strong>5.9</strong></td>
+          <td class="mono dir-neutral">0.0</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">1.9</td>
+          <td class="mono"><strong>1.9</strong></td>
+          <td class="mono dir-neutral">0.0</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">1.01x</td>
+        </tr>
+        
+        <tr class="">
+          <td class="prop-name">
+            <strong>Julian Reese</strong>
+            <span class="prop-team">WAS</span>
+          </td>
+          <td class="mono">11.4</td>
+          <td class="mono"><strong>11.5</strong></td>
+          <td class="mono dir-neutral">+0.1</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">11.0</td>
+          <td class="mono"><strong>11.0</strong></td>
+          <td class="mono dir-neutral">0.0</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">1.9</td>
+          <td class="mono"><strong>1.9</strong></td>
+          <td class="mono dir-neutral">0.0</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">1.01x</td>
+        </tr>
+        
+        <tr class="">
+          <td class="prop-name">
+            <strong>Kyshawn George</strong>
+            <span class="prop-team">WAS</span>
+          </td>
+          <td class="mono">14.8</td>
+          <td class="mono"><strong>14.9</strong></td>
+          <td class="mono dir-neutral">+0.1</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">5.1</td>
+          <td class="mono"><strong>5.1</strong></td>
+          <td class="mono dir-neutral">0.0</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">4.5</td>
+          <td class="mono"><strong>4.5</strong></td>
+          <td class="mono dir-neutral">0.0</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">1.01x</td>
+        </tr>
+        
+        <tr class="">
+          <td class="prop-name">
+            <strong>Bub Carrington</strong>
+            <span class="prop-team">WAS</span>
+          </td>
+          <td class="mono">10.3</td>
+          <td class="mono"><strong>10.4</strong></td>
+          <td class="mono dir-neutral">+0.1</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">3.5</td>
+          <td class="mono"><strong>3.5</strong></td>
+          <td class="mono dir-neutral">0.0</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">4.5</td>
+          <td class="mono"><strong>4.5</strong></td>
+          <td class="mono dir-neutral">0.0</td>
+          <td class="dir-neutral">NEUTRAL</td>
+          <td class="mono">1.01x</td>
+        </tr>
+        </tbody>
+        </table>
+      </div>
+    </div>
+    
+            
+    <div class="section-block">
+      <h3 class="section-title">Recent Form</h3>
+      <div class="form-grid">
+        <div class="form-card">
+          <p class="form-team">WAS</p>
+          <div class="form-stats">
+            <div class="form-stat">
+              <span class="form-label">L5</span>
+              <span class="form-val">1-4</span>
+            </div>
+            <div class="form-stat">
+              <span class="form-label">L10</span>
+              <span class="form-val">1-9</span>
+            </div>
+            <div class="form-stat">
+              <span class="form-label">L5 Net</span>
+              <span class="form-val">-13.1</span>
+            </div>
+            <div class="form-stat">
+              <span class="form-label">L10 Net</span>
+              <span class="form-val">-12.3</span>
+            </div>
+          </div>
+          <p class="form-trend">trending down</p>
+        </div>
+        <div class="form-card">
+          <p class="form-team">LAL</p>
+          <div class="form-stats">
+            <div class="form-stat">
+              <span class="form-label">L5</span>
+              <span class="form-val">4-1</span>
+            </div>
+            <div class="form-stat">
+              <span class="form-label">L10</span>
+              <span class="form-val">9-1</span>
+            </div>
+            <div class="form-stat">
+              <span class="form-label">L5 Net</span>
+              <span class="form-val">+5.5</span>
+            </div>
+            <div class="form-stat">
+              <span class="form-label">L10 Net</span>
+              <span class="form-val">+7.3</span>
+            </div>
+          </div>
+          <p class="form-trend">hot (L5 significantly above season average)</p>
+        </div>
+      </div>
+    </div>
+    
+          </div>
+        </div>
+        
+  
+    <section class="elo-section">
+      <div class="container">
+        <p class="section-eyebrow">POWER RANKINGS</p>
+        <h2 class="section-heading">Elo Ratings</h2>
+        <div class="elo-chart-wrap">
+          <canvas id="eloChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <script>
+    (function() {
+      const ctx = document.getElementById('eloChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ["OKC", "SAS", "DET", "BOS", "NYK", "CHA", "DEN", "CLE", "HOU", "MIN", "MIA", "ATL", "TOR", "LAC", "LAL", "PHX", "ORL", "GSW", "PHI", "POR", "NOP", "MEM", "CHI", "DAL", "MIL", "UTA", "IND", "BKN", "SAC", "WAS"],
+          datasets: [{
+            label: 'Elo Rating',
+            data: [1770.0, 1700.0, 1697.5, 1695.0, 1670.0, 1617.5, 1610.0, 1600.0, 1597.5, 1590.0, 1565.0, 1542.5, 1540.0, 1532.5, 1532.5, 1525.0, 1517.5, 1507.5, 1492.5, 1467.5, 1410.0, 1397.5, 1387.5, 1375.0, 1352.5, 1310.0, 1285.0, 1265.0, 1247.5, 1225.0],
+            backgroundColor: ["#2A7D6F", "#2A7D6F", "#2A7D6F", "#2A7D6F", "#2A7D6F", "#C8831A", "#C8831A", "#C8831A", "#C8831A", "#C8831A", "#C8831A", "#C8831A", "#C8831A", "#C8831A", "#C8831A", "#C8831A", "#C8831A", "#C8831A", "#C8831A", "#C8831A", "#C8831A", "#C8831A", "#C8831A", "#C8831A", "#C8831A", "#D4603A", "#D4603A", "#D4603A", "#D4603A", "#D4603A"],
+            borderColor: 'transparent',
+            borderRadius: 4,
+            barThickness: 20
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: '#0F0F0F',
+              titleFont: { family: 'DM Sans', size: 13 },
+              bodyFont: { family: 'DM Mono', size: 12 },
+              padding: 12,
+              cornerRadius: 6
+            }
+          },
+          scales: {
+            x: {
+              min: 1100,
+              max: 1850,
+              grid: { color: '#E2DDD5', lineWidth: 0.5 },
+              ticks: {
+                font: { family: 'DM Mono', size: 11 },
+                color: '#7A7570'
+              }
+            },
+            y: {
+              grid: { display: false },
+              ticks: {
+                font: { family: 'DM Mono', size: 11, weight: 500 },
+                color: '#1A1A1A'
+              }
+            }
+          }
+        }
+      });
+    })();
+    </script>
+    
+  
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-col">
+            <p class="footer-heading">NBA EDGE</p>
+            <p class="footer-text">Quantitative NBA analysis. Not financial advice.
+            All model outputs are probabilistic estimates.</p>
+          </div>
+          <div class="footer-col">
+            <p class="footer-heading">Sources</p>
+            <ul class="footer-list">
+              <li>NBA.com / nba_api</li>
+              <li>Stake.com (odds)</li>
+              <li>Custom Elo model</li>
+              <li>Logistic regression + Monte Carlo</li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <p class="footer-heading">Model Layers</p>
+            <ul class="footer-list"><li>Elo power ratings (K=20, MOV multiplier, seeded from net rating)</li><li>Four Factors: eFG% (40%), TOV% (25%), OREB% (20%), FTRate (15%) — offense vs defense</li><li>Cross-matchups: shooting eFG% vs opponent eFG%, 3PT% vs opp 3PT%, turnovers, rebounding</li><li>Scoring profile: 3PT shot rate, paint scoring %, fast break %, FT %, off-turnover %</li><li>Defensive profile: opp PPG, opp FG%, opp 3PT%, steals, blocks, forced turnovers, DREB%</li></ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>Generated 2026-03-30 20:36 &middot; 40+ dimensions per game</p>
+          <p class="footer-disclaimer">For informational purposes only. Past performance does not guarantee future results.</p>
+        </div>
+      </div>
+    </footer>
+    
+</body>
+</html>

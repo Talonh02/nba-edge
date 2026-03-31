@@ -1,0 +1,7 @@
+nba_api
+pandas
+numpy
+requests
+python-dotenv
+scipy
+cloudscraper

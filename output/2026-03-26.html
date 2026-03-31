@@ -1,0 +1,1947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NBA Edge — March 26, 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  /* ── Reset & Base ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #FAF7F2;
+    color: #1A1A1A;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Typography ── */
+  h1, h2, h3, h4 { font-family: 'Playfair Display', serif; font-weight: 700; }
+  .mono { font-family: 'DM Mono', monospace; }
+  .stat-num { font-family: 'DM Mono', monospace; font-weight: 500; }
+  .eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #D4603A;
+  }
+
+  /* ── Colors ── */
+  :root {
+    --bg: #FAF7F2;
+    --dark: #0F0F0F;
+    --text: #1A1A1A;
+    --coral: #D4603A;
+    --coral-light: #E8845F;
+    --teal: #2A7D6F;
+    --teal-light: #3A9D8F;
+    --amber: #C8831A;
+    --amber-light: #E0A040;
+    --muted: #7A7570;
+    --border: #E2DDD5;
+    --cream: #FAF7F2;
+  }
+
+  /* ── Dark Hero ── */
+  .hero {
+    background: var(--dark);
+    color: #fff;
+    padding: 5rem 2rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -120px; right: -80px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(42,125,111,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -100px; left: 10%;
+    width: 350px; height: 350px;
+    background: radial-gradient(circle, rgba(200,131,26,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-inner { max-width: 1100px; margin: 0 auto; position: relative; z-index: 1; }
+  .hero h1 { font-size: 3.5rem; line-height: 1.1; margin-bottom: 0.75rem; }
+  .hero h1 em { font-style: italic; color: var(--coral-light); }
+  .hero-date { font-family: 'DM Sans', sans-serif; color: #999; font-size: 1.05rem; margin-bottom: 2.5rem; }
+  .hero-stats {
+    display: flex; gap: 3rem; flex-wrap: wrap;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 2rem;
+  }
+  .hero-stat-block {}
+  .hero-stat-value { font-family: 'DM Mono', monospace; font-size: 2.2rem; font-weight: 500; color: #fff; }
+  .hero-stat-label { font-family: 'DM Sans', sans-serif; font-size: 0.85rem; color: #888; margin-top: 0.2rem; }
+
+  /* ── Content Container ── */
+  .content { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
+
+  /* ── Game Section ── */
+  .game-section { margin: 3rem 0 4rem; }
+  .game-header {
+    background: var(--dark);
+    color: #fff;
+    padding: 2rem 2.5rem;
+    border-radius: 12px 12px 0 0;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 1rem;
+  }
+  .game-header-teams { display: flex; align-items: center; gap: 1.5rem; }
+  .team-block { text-align: center; }
+  .team-abbr { font-family: 'DM Mono', monospace; font-size: 2rem; font-weight: 500; }
+  .team-record { font-family: 'DM Mono', monospace; font-size: 0.8rem; color: #999; }
+  .team-name-full { font-family: 'DM Sans', sans-serif; font-size: 0.75rem; color: #bbb; margin-top: 0.15rem; }
+  .vs-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 0.25rem 0.5rem;
+    border: 1px solid #333;
+    border-radius: 4px;
+  }
+  .game-meta { text-align: right; }
+  .game-meta-venue { font-family: 'DM Sans', sans-serif; font-size: 0.85rem; color: #bbb; }
+  .game-meta-time { font-family: 'DM Mono', monospace; font-size: 0.8rem; color: #888; margin-top: 0.25rem; }
+
+  .game-body {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+    padding: 2.5rem;
+  }
+
+  /* ── Section Titles inside game ── */
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    margin: 2.5rem 0 1.25rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border);
+  }
+  .section-title:first-child { margin-top: 0; }
+
+  /* ── Elo & Prediction Bar ── */
+  .elo-prediction { margin-bottom: 2rem; }
+  .win-prob-bar-container { margin: 1rem 0 1.5rem; }
+  .win-prob-labels {
+    display: flex; justify-content: space-between; margin-bottom: 0.4rem;
+  }
+  .win-prob-label { font-family: 'DM Mono', monospace; font-size: 0.85rem; }
+  .win-prob-bar {
+    height: 36px;
+    border-radius: 6px;
+    overflow: hidden;
+    display: flex;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+  }
+  .win-prob-home {
+    background: var(--teal);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Mono', monospace; font-size: 0.85rem; color: #fff; font-weight: 500;
+    transition: width 0.5s ease;
+  }
+  .win-prob-away {
+    background: var(--amber);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Mono', monospace; font-size: 0.85rem; color: #fff; font-weight: 500;
+    transition: width 0.5s ease;
+  }
+  .elo-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  .elo-card {
+    background: #FAFAFA;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+  }
+  .elo-card-label { font-size: 0.75rem; color: var(--muted); font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: 0.08em; }
+  .elo-card-value { font-family: 'DM Mono', monospace; font-size: 1.4rem; font-weight: 500; margin-top: 0.2rem; }
+  .elo-card-sub { font-size: 0.75rem; color: var(--muted); margin-top: 0.2rem; }
+
+  /* ── Stat Tables ── */
+  .profiles-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+  @media (max-width: 768px) { .profiles-grid { grid-template-columns: 1fr; } }
+  .profile-col {}
+  .profile-col-header {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 0.75rem 1rem;
+    background: var(--dark);
+    color: #fff;
+    border-radius: 8px 8px 0 0;
+  }
+  .stat-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+  .stat-table th {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    text-align: left;
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+    font-weight: 500;
+  }
+  .stat-table td {
+    padding: 0.55rem 0.75rem;
+    border-bottom: 1px solid #F0ECE6;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82rem;
+  }
+  .stat-table tr:last-child td { border-bottom: none; }
+  .stat-table .stat-label { font-family: 'DM Sans', sans-serif; color: var(--text); }
+  .stat-table .rank-tag {
+    display: inline-block;
+    font-size: 0.65rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    margin-left: 0.4rem;
+    font-weight: 500;
+  }
+  .rank-elite { background: rgba(42,125,111,0.12); color: var(--teal); }
+  .rank-top5 { background: rgba(42,125,111,0.12); color: var(--teal); }
+  .rank-top10 { background: rgba(42,125,111,0.08); color: var(--teal); }
+  .rank-above { background: rgba(200,131,26,0.08); color: var(--amber); }
+  .rank-below { background: rgba(122,117,112,0.1); color: var(--muted); }
+  .rank-bottom10 { background: rgba(212,96,58,0.08); color: var(--coral); }
+  .rank-bottom5 { background: rgba(212,96,58,0.12); color: var(--coral); }
+  .rank-bottom3 { background: rgba(212,96,58,0.15); color: var(--coral); }
+
+  /* ── Four Factors ── */
+  .four-factors-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+  @media (max-width: 768px) { .four-factors-grid { grid-template-columns: 1fr; } }
+  .ff-matchup-card {
+    background: #FAFAFA;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+  }
+  .ff-matchup-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+  .ff-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid #EDE9E2;
+  }
+  .ff-row:last-child { border-bottom: none; }
+  .ff-factor-name { font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 500; }
+  .ff-factor-weight { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--muted); }
+  .ff-values { display: flex; gap: 1rem; align-items: center; }
+  .ff-val { font-family: 'DM Mono', monospace; font-size: 0.85rem; min-width: 55px; text-align: center; }
+  .ff-edge {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    min-width: 55px;
+    text-align: center;
+  }
+  .edge-pos { background: rgba(42,125,111,0.1); color: var(--teal); }
+  .edge-neg { background: rgba(212,96,58,0.1); color: var(--coral); }
+  .edge-neutral { background: rgba(122,117,112,0.08); color: var(--muted); }
+
+  .ff-grade-box {
+    display: inline-flex; align-items: center; gap: 0.75rem;
+    background: #FAFAFA; border: 1px solid var(--border);
+    border-radius: 8px; padding: 1rem 1.5rem;
+    margin-top: 1rem;
+  }
+  .ff-grade-letter {
+    font-family: 'DM Mono', monospace;
+    font-size: 2rem;
+    font-weight: 500;
+  }
+  .ff-grade-text { font-size: 0.85rem; color: var(--muted); }
+
+  /* ── Cross Matchup ── */
+  .cross-matchup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width: 768px) { .cross-matchup-grid { grid-template-columns: 1fr; } }
+  .cross-card {
+    background: #FAFAFA;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem;
+  }
+  .cross-card-title {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+  }
+  .cross-stat-row {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 0.4rem;
+  }
+  .cross-stat-label { font-size: 0.8rem; color: var(--text); }
+  .cross-stat-val { font-family: 'DM Mono', monospace; font-size: 0.85rem; font-weight: 500; }
+
+  /* ── Chart Container ── */
+  .chart-container {
+    position: relative;
+    margin: 1.5rem 0;
+    max-width: 100%;
+  }
+  .chart-container canvas { max-height: 300px; }
+
+  /* ── Recent Form ── */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  @media (max-width: 768px) { .form-grid { grid-template-columns: 1fr; } }
+  .form-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .form-card-header {
+    padding: 0.75rem 1rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .form-card-header.hot { background: rgba(42,125,111,0.1); color: var(--teal); }
+  .form-card-header.cold { background: rgba(212,96,58,0.1); color: var(--coral); }
+  .form-card-header.neutral { background: #F5F2ED; color: var(--muted); }
+  .form-card-body { padding: 1rem; }
+  .form-stat-row {
+    display: flex; justify-content: space-between;
+    padding: 0.35rem 0;
+    border-bottom: 1px solid #F0ECE6;
+    font-size: 0.82rem;
+  }
+  .form-stat-row:last-child { border-bottom: none; }
+  .form-stat-label { font-family: 'DM Sans', sans-serif; }
+  .form-stat-val { font-family: 'DM Mono', monospace; font-weight: 500; }
+
+  /* ── Key Players Table ── */
+  .players-table-wrap { overflow-x: auto; margin: 1rem 0; }
+  .players-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+    min-width: 700px;
+  }
+  .players-table thead th {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    padding: 0.6rem 0.5rem;
+    border-bottom: 2px solid var(--border);
+    text-align: right;
+    font-weight: 500;
+  }
+  .players-table thead th:first-child { text-align: left; }
+  .players-table tbody td {
+    padding: 0.5rem;
+    border-bottom: 1px solid #F0ECE6;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    text-align: right;
+  }
+  .players-table tbody td:first-child {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    text-align: left;
+    white-space: nowrap;
+  }
+  .players-table .best-in-col { color: var(--teal); font-weight: 600; }
+  .players-table .team-separator td { border-top: 3px solid var(--border); }
+
+  /* ── Insight Flags ── */
+  .flags-grid { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 1rem 0; }
+  .flag-pill {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    display: flex; align-items: center; gap: 0.5rem;
+    line-height: 1.3;
+  }
+  .flag-pill .flag-icon { font-size: 0.7rem; font-family: 'DM Mono', monospace; font-weight: 600; }
+  .flag-trend { background: rgba(42,125,111,0.08); border: 1px solid rgba(42,125,111,0.2); color: #1F5F54; }
+  .flag-trend.cold { background: rgba(212,96,58,0.08); border: 1px solid rgba(212,96,58,0.2); color: #993A24; }
+  .flag-shooting { background: rgba(200,131,26,0.08); border: 1px solid rgba(200,131,26,0.2); color: #8A5F10; }
+  .flag-four_factors { background: rgba(42,125,111,0.08); border: 1px solid rgba(42,125,111,0.2); color: #1F5F54; }
+  .flag-turnovers { background: rgba(212,96,58,0.08); border: 1px solid rgba(212,96,58,0.2); color: #993A24; }
+  .flag-mismatch { background: rgba(200,131,26,0.08); border: 1px solid rgba(200,131,26,0.2); color: #8A5F10; }
+
+  /* ── Elo Power Rankings ── */
+  .power-rankings { margin: 3rem 0 4rem; }
+  .pr-chart-container { position: relative; height: 800px; margin: 1.5rem 0; }
+
+  /* ── Setup Note ── */
+  .setup-note {
+    background: rgba(200,131,26,0.08);
+    border: 1px solid rgba(200,131,26,0.25);
+    border-radius: 10px;
+    padding: 1.5rem 2rem;
+    margin: 3rem 0;
+  }
+  .setup-note-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--amber);
+    margin-bottom: 0.5rem;
+  }
+  .setup-note p { font-size: 0.9rem; color: #6B5A3A; line-height: 1.6; }
+  .setup-note code {
+    background: rgba(200,131,26,0.1);
+    padding: 0.15rem 0.4rem;
+    border-radius: 3px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82rem;
+  }
+
+  /* ── Footer ── */
+  .footer {
+    background: var(--dark);
+    color: #888;
+    padding: 3rem 2rem;
+    margin-top: 4rem;
+  }
+  .footer-inner { max-width: 1100px; margin: 0 auto; }
+  .footer-brand {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--coral);
+    margin-bottom: 1rem;
+  }
+  .footer p { font-size: 0.8rem; line-height: 1.7; margin-bottom: 0.5rem; }
+  .footer .footer-disclaimer {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #222;
+    font-size: 0.72rem;
+    color: #555;
+  }
+
+  /* ── Utility ── */
+  .divider { height: 1px; background: var(--border); margin: 2rem 0; }
+  .text-teal { color: var(--teal); }
+  .text-coral { color: var(--coral); }
+  .text-amber { color: var(--amber); }
+  .text-muted { color: var(--muted); }
+  .fw-600 { font-weight: 600; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════ HERO ═══════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow" style="margin-bottom: 1rem;">NBA EDGE</p>
+    <h1>Tonight's <em>Edge</em></h1>
+    <p class="hero-date">Wednesday, March 26, 2026</p>
+    <div class="hero-stats">
+      <div class="hero-stat-block">
+        <div class="hero-stat-value">3</div>
+        <div class="hero-stat-label">Games Analyzed</div>
+      </div>
+      <div class="hero-stat-block">
+        <div class="hero-stat-value">40+</div>
+        <div class="hero-stat-label">Dimensions per Game</div>
+      </div>
+      <div class="hero-stat-block">
+        <div class="hero-stat-value">18</div>
+        <div class="hero-stat-label">Insight Flags Generated</div>
+      </div>
+      <div class="hero-stat-block">
+        <div class="hero-stat-value" style="font-size:1rem; line-height: 2.2rem; color: var(--amber);">Odds key needed for picks</div>
+        <div class="hero-stat-label">Add ODDS_API_KEY to .env</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="content">
+
+<!-- ═══════════════════════════════════════ GAME 1: CHA vs NYK ═══════════════════════════════════════ -->
+<div class="game-section">
+  <div class="game-header">
+    <div class="game-header-teams">
+      <div class="team-block">
+        <div class="team-abbr">CHA</div>
+        <div class="team-name-full">Charlotte Hornets</div>
+        <div class="team-record">38-34</div>
+      </div>
+      <div class="vs-badge">vs</div>
+      <div class="team-block">
+        <div class="team-abbr">NYK</div>
+        <div class="team-name-full">New York Knicks</div>
+        <div class="team-record">48-25</div>
+      </div>
+    </div>
+    <div class="game-meta">
+      <div class="game-meta-venue">Spectrum Center</div>
+      <div class="game-meta-time">7:00 PM ET</div>
+    </div>
+  </div>
+
+  <div class="game-body">
+
+    <!-- Elo & Prediction -->
+    <h3 class="section-title">Elo & Prediction</h3>
+    <div class="elo-prediction">
+      <div class="win-prob-bar-container">
+        <div class="win-prob-labels">
+          <span class="win-prob-label text-teal">CHA 52.5%</span>
+          <span class="win-prob-label text-amber">NYK 47.5%</span>
+        </div>
+        <div class="win-prob-bar">
+          <div class="win-prob-home" style="width: 52.5%;">52.5%</div>
+          <div class="win-prob-away" style="width: 47.5%;">47.5%</div>
+        </div>
+      </div>
+      <div class="elo-details">
+        <div class="elo-card">
+          <div class="elo-card-label">Projected Spread</div>
+          <div class="elo-card-value">CHA -0.7</div>
+          <div class="elo-card-sub">Essentially a coin flip</div>
+        </div>
+        <div class="elo-card">
+          <div class="elo-card-label">CHA Elo</div>
+          <div class="elo-card-value">1617.5</div>
+          <div class="elo-card-sub">Adjusted: 1687.5 (+70 HCA)</div>
+        </div>
+        <div class="elo-card">
+          <div class="elo-card-label">NYK Elo</div>
+          <div class="elo-card-value">1670.0</div>
+          <div class="elo-card-sub">Adjusted: 1670.0 (no adj.)</div>
+        </div>
+        <div class="elo-card">
+          <div class="elo-card-label">Adjustments</div>
+          <div class="elo-card-value" style="font-size:1rem;">Home Court +70</div>
+          <div class="elo-card-sub">No B2B, no rest, no altitude</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Team Profiles Side-by-Side -->
+    <h3 class="section-title">Team Profiles</h3>
+    <div class="profiles-grid">
+      <!-- CHA Offense/Defense -->
+      <div class="profile-col">
+        <div class="profile-col-header">CHA Hornets &mdash; 38-34 (.528)</div>
+        <table class="stat-table">
+          <thead><tr><th>Offense</th><th>Value</th><th>Rank</th></tr></thead>
+          <tbody>
+            <tr><td class="stat-label">ORTG</td><td class="stat-num">118.2</td><td><span class="rank-tag rank-top5">#4 (top 5)</span></td></tr>
+            <tr><td class="stat-label">PPG</td><td class="stat-num">116.4</td><td><span class="rank-tag rank-above">#12</span></td></tr>
+            <tr><td class="stat-label">eFG%</td><td class="stat-num">55.3%</td><td><span class="rank-tag rank-above">#11</span></td></tr>
+            <tr><td class="stat-label">TS%</td><td class="stat-num">59.0%</td><td><span class="rank-tag rank-top10">#8</span></td></tr>
+            <tr><td class="stat-label">3PT%</td><td class="stat-num">38.2%</td><td>&mdash;</td></tr>
+            <tr><td class="stat-label">FT%</td><td class="stat-num">81.7%</td><td>&mdash;</td></tr>
+            <tr><td class="stat-label">APG</td><td class="stat-num">26.5</td><td><span class="rank-tag rank-above">#14</span></td></tr>
+            <tr><td class="stat-label">TOV/G</td><td class="stat-num">15.7</td><td><span class="rank-tag rank-bottom10">#24</span></td></tr>
+            <tr><td class="stat-label">OREB%</td><td class="stat-num">35.6%</td><td><span class="rank-tag rank-elite">#2 (elite)</span></td></tr>
+            <tr><td class="stat-label">Pace</td><td class="stat-num">98.1</td><td><span class="rank-tag rank-bottom10">#25</span></td></tr>
+          </tbody>
+        </table>
+        <table class="stat-table" style="margin-top:1rem;">
+          <thead><tr><th>Defense</th><th>Value</th><th>Rank</th></tr></thead>
+          <tbody>
+            <tr><td class="stat-label">DRTG</td><td class="stat-num">113.5</td><td><span class="rank-tag rank-above">#12</span></td></tr>
+            <tr><td class="stat-label">Opp PPG</td><td class="stat-num">111.8</td><td>&mdash;</td></tr>
+            <tr><td class="stat-label">Opp FG%</td><td class="stat-num">46.6%</td><td>&mdash;</td></tr>
+            <tr><td class="stat-label">Opp 3PT%</td><td class="stat-num">35.8%</td><td>&mdash;</td></tr>
+            <tr><td class="stat-label">SPG</td><td class="stat-num">7.1</td><td><span class="rank-tag rank-bottom3">#29</span></td></tr>
+            <tr><td class="stat-label">BPG</td><td class="stat-num">4.6</td><td><span class="rank-tag rank-below">#19</span></td></tr>
+            <tr><td class="stat-label">DREB%</td><td class="stat-num">72.3%</td><td><span class="rank-tag rank-elite">#1 (elite)</span></td></tr>
+          </tbody>
+        </table>
+        <table class="stat-table" style="margin-top:1rem;">
+          <thead><tr><th>Overall</th><th>Value</th><th>Rank</th></tr></thead>
+          <tbody>
+            <tr><td class="stat-label">Net Rating</td><td class="stat-num fw-600">+4.7</td><td><span class="rank-tag rank-top10">#6</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- NYK Offense/Defense -->
+      <div class="profile-col">
+        <div class="profile-col-header">NYK Knicks &mdash; 48-25 (.658)</div>
+        <table class="stat-table">
+          <thead><tr><th>Offense</th><th>Value</th><th>Rank</th></tr></thead>
+          <tbody>
+            <tr><td class="stat-label">ORTG</td><td class="stat-num">118.7</td><td><span class="rank-tag rank-elite">#3 (elite)</span></td></tr>
+            <tr><td class="stat-label">PPG</td><td class="stat-num">117.2</td><td><span class="rank-tag rank-top10">#10</span></td></tr>
+            <tr><td class="stat-label">eFG%</td><td class="stat-num">55.6%</td><td><span class="rank-tag rank-top10">#9</span></td></tr>
+            <tr><td class="stat-label">TS%</td><td class="stat-num">58.9%</td><td><span class="rank-tag rank-top10">#9</span></td></tr>
+            <tr><td class="stat-label">3PT%</td><td class="stat-num">37.4%</td><td>&mdash;</td></tr>
+            <tr><td class="stat-label">FT%</td><td class="stat-num">79.1%</td><td>&mdash;</td></tr>
+            <tr><td class="stat-label">APG</td><td class="stat-num">27.5</td><td><span class="rank-tag rank-above">#11</span></td></tr>
+            <tr><td class="stat-label">TOV/G</td><td class="stat-num">13.8</td><td><span class="rank-tag rank-top10">#7</span></td></tr>
+            <tr><td class="stat-label">OREB%</td><td class="stat-num">32.9%</td><td><span class="rank-tag rank-top10">#6</span></td></tr>
+            <tr><td class="stat-label">Pace</td><td class="stat-num">98.3</td><td><span class="rank-tag rank-bottom10">#24</span></td></tr>
+          </tbody>
+        </table>
+        <table class="stat-table" style="margin-top:1rem;">
+          <thead><tr><th>Defense</th><th>Value</th><th>Rank</th></tr></thead>
+          <tbody>
+            <tr><td class="stat-label">DRTG</td><td class="stat-num">111.9</td><td><span class="rank-tag rank-top5">#5 (top 5)</span></td></tr>
+            <tr><td class="stat-label">Opp PPG</td><td class="stat-num">110.5</td><td>&mdash;</td></tr>
+            <tr><td class="stat-label">Opp FG%</td><td class="stat-num">45.8%</td><td>&mdash;</td></tr>
+            <tr><td class="stat-label">Opp 3PT%</td><td class="stat-num">35.9%</td><td>&mdash;</td></tr>
+            <tr><td class="stat-label">SPG</td><td class="stat-num">8.1</td><td><span class="rank-tag rank-below">#19</span></td></tr>
+            <tr><td class="stat-label">BPG</td><td class="stat-num">4.0</td><td><span class="rank-tag rank-bottom5">#27</span></td></tr>
+            <tr><td class="stat-label">DREB%</td><td class="stat-num">72.0%</td><td><span class="rank-tag rank-elite">#3 (elite)</span></td></tr>
+          </tbody>
+        </table>
+        <table class="stat-table" style="margin-top:1rem;">
+          <thead><tr><th>Overall</th><th>Value</th><th>Rank</th></tr></thead>
+          <tbody>
+            <tr><td class="stat-label">Net Rating</td><td class="stat-num fw-600">+6.8</td><td><span class="rank-tag rank-top5">#5</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Four Factors -->
+    <h3 class="section-title">Four Factors Matchup</h3>
+    <div class="four-factors-grid">
+      <div class="ff-matchup-card">
+        <div class="ff-matchup-title">NYK Offense vs CHA Defense</div>
+        <div class="ff-row">
+          <div>
+            <span class="ff-factor-name">eFG%</span>
+            <span class="ff-factor-weight">(40% weight)</span>
+          </div>
+          <div class="ff-values">
+            <span class="ff-val">55.6%</span>
+            <span class="ff-val text-muted">vs</span>
+            <span class="ff-val">53.8%</span>
+            <span class="ff-edge edge-pos">+1.8%</span>
+          </div>
+        </div>
+        <div class="ff-row">
+          <div>
+            <span class="ff-factor-name">TOV%</span>
+            <span class="ff-factor-weight">(25% weight)</span>
+          </div>
+          <div class="ff-values">
+            <span class="ff-val">13.9%</span>
+            <span class="ff-val text-muted">vs</span>
+            <span class="ff-val">12.9%</span>
+            <span class="ff-edge edge-neg">-1.0%</span>
+          </div>
+        </div>
+        <div class="ff-row">
+          <div>
+            <span class="ff-factor-name">OREB%</span>
+            <span class="ff-factor-weight">(20% weight)</span>
+          </div>
+          <div class="ff-values">
+            <span class="ff-val">32.9%</span>
+            <span class="ff-val text-muted">vs</span>
+            <span class="ff-val">27.7%</span>
+            <span class="ff-edge edge-pos">+5.2%</span>
+          </div>
+        </div>
+        <div class="ff-row">
+          <div>
+            <span class="ff-factor-name">FT Rate</span>
+            <span class="ff-factor-weight">(15% weight)</span>
+          </div>
+          <div class="ff-values">
+            <span class="ff-val">24.1%</span>
+            <span class="ff-val text-muted">vs</span>
+            <span class="ff-val">23.5%</span>
+            <span class="ff-edge edge-neutral">+0.6%</span>
+          </div>
+        </div>
+        <div style="margin-top: 0.75rem;">
+          <span class="stat-num" style="font-size: 0.8rem;">Weighted Score: <strong class="text-teal">+0.0160</strong></span>
+        </div>
+      </div>
+
+      <div class="ff-matchup-card">
+        <div class="ff-matchup-title">CHA Offense vs NYK Defense</div>
+        <div class="ff-row">
+          <div>
+            <span class="ff-factor-name">eFG%</span>
+            <span class="ff-factor-weight">(40% weight)</span>
+          </div>
+          <div class="ff-values">
+            <span class="ff-val">55.3%</span>
+            <span class="ff-val text-muted">vs</span>
+            <span class="ff-val">53.8%</span>
+            <span class="ff-edge edge-pos">+1.5%</span>
+          </div>
+        </div>
+        <div class="ff-row">
+          <div>
+            <span class="ff-factor-name">TOV%</span>
+            <span class="ff-factor-weight">(25% weight)</span>
+          </div>
+          <div class="ff-values">
+            <span class="ff-val">15.9%</span>
+            <span class="ff-val text-muted">vs</span>
+            <span class="ff-val">14.5%</span>
+            <span class="ff-edge edge-neg">-1.4%</span>
+          </div>
+        </div>
+        <div class="ff-row">
+          <div>
+            <span class="ff-factor-name">OREB%</span>
+            <span class="ff-factor-weight">(20% weight)</span>
+          </div>
+          <div class="ff-values">
+            <span class="ff-val">35.6%</span>
+            <span class="ff-val text-muted">vs</span>
+            <span class="ff-val">28.0%</span>
+            <span class="ff-edge edge-pos">+7.6%</span>
+          </div>
+        </div>
+        <div class="ff-row">
+          <div>
+            <span class="ff-factor-name">FT Rate</span>
+            <span class="ff-factor-weight">(15% weight)</span>
+          </div>
+          <div class="ff-values">
+            <span class="ff-val">24.8%</span>
+            <span class="ff-val text-muted">vs</span>
+            <span class="ff-val">26.4%</span>
+            <span class="ff-edge edge-neg">-1.6%</span>
+          </div>
+        </div>
+        <div style="margin-top: 0.75rem;">
+          <span class="stat-num" style="font-size: 0.8rem;">Weighted Score: <strong class="text-teal">+0.0153</strong></span>
+        </div>
+      </div>
+    </div>
+    <div class="ff-grade-box">
+      <span class="ff-grade-letter text-amber">C</span>
+      <div>
+        <div class="ff-grade-text">Four Factors grade favors <strong>NYK</strong></div>
+        <div class="ff-grade-text" style="font-size:0.75rem;">Net advantage: +0.0007</div>
+      </div>
+    </div>
+
+    <!-- Cross-Matchup Analysis -->
+    <h3 class="section-title">Cross-Matchup Analysis</h3>
+    <div class="cross-matchup-grid">
+      <div class="cross-card">
+        <div class="cross-card-title">Shooting: CHA eFG% vs NYK Def eFG%</div>
+        <div class="cross-stat-row">
+          <span class="cross-stat-label">CHA Offensive eFG%</span>
+          <span class="cross-stat-val">55.3%</span>
+        </div>
+        <div class="cross-stat-row">
+          <span class="cross-stat-label">NYK Opp eFG% Allowed</span>
+          <span class="cross-stat-val">53.8%</span>
+        </div>
+        <div class="cross-stat-row">
+          <span class="cross-stat-label">Edge</span>
+          <span class="cross-stat-val text-teal">+1.5%</span>
+        </div>
+        <div style="margin-top:0.5rem;font-size:0.8rem;color:var(--muted);">Neutral shooting matchup</div>
+      </div>
+      <div class="cross-card">
+        <div class="cross-card-title">Shooting: NYK eFG% vs CHA Def eFG%</div>
+        <div class="cross-stat-row">
+          <span class="cross-stat-label">NYK Offensive eFG%</span>
+          <span class="cross-stat-val">55.6%</span>
+        </div>
+        <div class="cross-stat-row">
+          <span class="cross-stat-label">CHA Opp eFG% Allowed</span>
+          <span class="cross-stat-val">53.8%</span>
+        </div>
+        <div class="cross-stat-row">
+          <span class="cross-stat-label">Edge</span>
+          <span class="cross-stat-val text-teal">+1.8%</span>
+        </div>
+      </div>
+      <div class="cross-card">
+        <div class="cross-card-title">3PT: CHA 38.2% vs NYK Allowing 35.9%</div>
+        <div class="cross-stat-row">
+          <span class="cross-stat-label">Edge</span>
+          <span class="cross-stat-val text-teal">+2.3% CHA</span>
+        </div>
+        <div style="margin-top:0.5rem;font-size:0.8rem;color:var(--muted);">CHA shoots 38.2% from 3 vs NYK allowing 35.9% -- 3PT mismatch</div>
+      </div>
+      <div class="cross-card">
+        <div class="cross-card-title">3PT: NYK 37.4% vs CHA Allowing 35.8%</div>
+        <div class="cross-stat-row">
+          <span class="cross-stat-label">Edge</span>
+          <span class="cross-stat-val text-teal">+1.6% NYK</span>
+        </div>
+      </div>
+      <div class="cross-card">
+        <div class="cross-card-title">Turnovers: CHA TOV% vs NYK Forcing</div>
+        <div class="cross-stat-row">
+          <span class="cross-stat-label">CHA TOV Rate</span>
+          <span class="cross-stat-val">15.9%</span>
+        </div>
+        <div class="cross-stat-row">
+          <span class="cross-stat-label">NYK Opp TOV%</span>
+          <span class="cross-stat-val">14.5%</span>
+        </div>
+        <div class="cross-stat-row">
+          <span class="cross-stat-label">Edge</span>
+          <span class="cross-stat-val text-coral">-1.4% (NYK forces)</span>
+        </div>
+      </div>
+      <div class="cross-card">
+        <div class="cross-card-title">Rebounding Matchup</div>
+        <div class="cross-stat-row">
+          <span class="cross-stat-label">CHA OREB% / NYK Opp OREB%</span>
+          <span class="cross-stat-val">35.6% / 28.0%</span>
+        </div>
+        <div class="cross-stat-row">
+          <span class="cross-stat-label">NYK OREB% / CHA Opp OREB%</span>
+          <span class="cross-stat-val">32.9% / 27.7%</span>
+        </div>
+        <div style="margin-top:0.5rem;font-size:0.8rem;color:var(--teal);">Both teams rebound well above what opponents typically allow -- board battle</div>
+      </div>
+    </div>
+
+    <!-- Scoring Style -->
+    <h3 class="section-title">Scoring Style Comparison</h3>
+    <div class="chart-container">
+      <canvas id="chart-scoring-g1"></canvas>
+    </div>
+
+    <!-- Recent Form -->
+    <h3 class="section-title">Recent Form</h3>
+    <div class="form-grid">
+      <div class="form-card">
+        <div class="form-card-header hot">CHA -- HOT (L5 significantly above season avg)</div>
+        <div class="form-card-body">
+          <div class="form-stat-row"><span class="form-stat-label">Last 5</span><span class="form-stat-val text-teal">4-1</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">Last 10</span><span class="form-stat-val">7-3</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L5 PPG</span><span class="form-stat-val">125.2</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L10 PPG</span><span class="form-stat-val">118.3</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L5 Net Rating</span><span class="form-stat-val text-teal">+20.3</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L10 Net Rating</span><span class="form-stat-val text-teal">+12.4</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L5 ORTG / DRTG</span><span class="form-stat-val">126.0 / 105.7</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L5 FG%</span><span class="form-stat-val">49.3%</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L5 3PT%</span><span class="form-stat-val">42.1%</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L5 +/-</span><span class="form-stat-val text-teal">+20.6</span></div>
+        </div>
+      </div>
+      <div class="form-card">
+        <div class="form-card-header hot">NYK -- HOT (L5 significantly above season avg)</div>
+        <div class="form-card-body">
+          <div class="form-stat-row"><span class="form-stat-label">Last 5</span><span class="form-stat-val text-teal">5-0</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">Last 10</span><span class="form-stat-val">8-2</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L5 PPG</span><span class="form-stat-val">121.0</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L10 PPG</span><span class="form-stat-val">119.7</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L5 Net Rating</span><span class="form-stat-val text-teal">+13.3</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L10 Net Rating</span><span class="form-stat-val text-teal">+11.2</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L5 ORTG / DRTG</span><span class="form-stat-val">126.0 / 112.8</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L5 FG%</span><span class="form-stat-val">50.8%</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L5 3PT%</span><span class="form-stat-val">39.5%</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L5 +/-</span><span class="form-stat-val text-teal">+13.4</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Key Players -->
+    <h3 class="section-title">Key Players</h3>
+    <div class="players-table-wrap">
+      <table class="players-table">
+        <thead>
+          <tr>
+            <th>Player</th><th>PPG</th><th>RPG</th><th>APG</th><th>TS%</th><th>USG%</th><th>+/-</th><th>PIE</th><th>GP</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- CHA -->
+          <tr style="background:rgba(42,125,111,0.03);">
+            <td><span style="color:var(--teal);font-size:0.65rem;margin-right:0.3rem;">CHA</span>LaMelo Ball</td>
+            <td>19.7</td><td>4.8</td><td class="best-in-col">7.1</td><td>54.2%</td><td class="best-in-col">30.7%</td><td class="best-in-col">+6.2</td><td>0.133</td><td>62</td>
+          </tr>
+          <tr style="background:rgba(42,125,111,0.03);">
+            <td><span style="color:var(--teal);font-size:0.65rem;margin-right:0.3rem;">CHA</span>Brandon Miller</td>
+            <td>20.3</td><td>5.0</td><td>3.5</td><td>57.0%</td><td>27.9%</td><td>+5.3</td><td>0.112</td><td>55</td>
+          </tr>
+          <tr style="background:rgba(42,125,111,0.03);">
+            <td><span style="color:var(--teal);font-size:0.65rem;margin-right:0.3rem;">CHA</span>Kon Knueppel</td>
+            <td>19.0</td><td>5.3</td><td>3.4</td><td class="best-in-col">65.0%</td><td>21.7%</td><td>+3.9</td><td>0.119</td><td>71</td>
+          </tr>
+          <tr style="background:rgba(42,125,111,0.03);">
+            <td><span style="color:var(--teal);font-size:0.65rem;margin-right:0.3rem;">CHA</span>Coby White</td>
+            <td>17.8</td><td>3.6</td><td>4.4</td><td>59.3%</td><td>27.7%</td><td>+1.8</td><td>0.109</td><td>41</td>
+          </tr>
+          <tr style="background:rgba(42,125,111,0.03);">
+            <td><span style="color:var(--teal);font-size:0.65rem;margin-right:0.3rem;">CHA</span>Miles Bridges</td>
+            <td>17.2</td><td>5.9</td><td>3.3</td><td>56.2%</td><td>22.4%</td><td>+1.9</td><td>0.110</td><td>67</td>
+          </tr>
+          <!-- NYK -->
+          <tr class="team-separator" style="background:rgba(200,131,26,0.03);">
+            <td><span style="color:var(--amber);font-size:0.65rem;margin-right:0.3rem;">NYK</span>Jalen Brunson</td>
+            <td class="best-in-col">26.2</td><td>3.4</td><td>6.6</td><td>58.1%</td><td>29.6%</td><td>+5.3</td><td>0.135</td><td>67</td>
+          </tr>
+          <tr style="background:rgba(200,131,26,0.03);">
+            <td><span style="color:var(--amber);font-size:0.65rem;margin-right:0.3rem;">NYK</span>Karl-Anthony Towns</td>
+            <td>20.2</td><td class="best-in-col">12.0</td><td>2.8</td><td>61.4%</td><td>25.2%</td><td>+5.8</td><td class="best-in-col">0.153</td><td>68</td>
+          </tr>
+          <tr style="background:rgba(200,131,26,0.03);">
+            <td><span style="color:var(--amber);font-size:0.65rem;margin-right:0.3rem;">NYK</span>OG Anunoby</td>
+            <td>16.8</td><td>5.2</td><td>2.2</td><td>61.6%</td><td>19.6%</td><td>+6.3</td><td>0.099</td><td>59</td>
+          </tr>
+          <tr style="background:rgba(200,131,26,0.03);">
+            <td><span style="color:var(--amber);font-size:0.65rem;margin-right:0.3rem;">NYK</span>Mikal Bridges</td>
+            <td>14.7</td><td>4.1</td><td>3.9</td><td>58.2%</td><td>17.0%</td><td>+4.0</td><td>0.101</td><td>73</td>
+          </tr>
+          <tr style="background:rgba(200,131,26,0.03);">
+            <td><span style="color:var(--amber);font-size:0.65rem;margin-right:0.3rem;">NYK</span>Josh Hart</td>
+            <td>12.2</td><td>7.6</td><td>5.0</td><td>60.6%</td><td>16.5%</td><td>+3.8</td><td>0.121</td><td>58</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Insight Flags -->
+    <h3 class="section-title">Insight Flags</h3>
+    <div class="flags-grid">
+      <div class="flag-pill flag-four_factors">
+        <span class="flag-icon">FF</span>
+        NYK has a 5.2% edge in offensive rebounding
+      </div>
+      <div class="flag-pill flag-shooting">
+        <span class="flag-icon">3PT</span>
+        CHA shoots 38.2% from 3 vs NYK allowing 35.9% -- 3PT mismatch
+      </div>
+      <div class="flag-pill flag-trend">
+        <span class="flag-icon">HOT</span>
+        CHA is HOT -- L5 net rating significantly above season average
+      </div>
+      <div class="flag-pill flag-trend">
+        <span class="flag-icon">HOT</span>
+        NYK is HOT -- L5 net rating significantly above season average
+      </div>
+      <div class="flag-pill flag-shooting">
+        <span class="flag-icon">EFG</span>
+        Neutral shooting matchup
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ GAME 2: DET vs NOP ═══════════════════════════════════════ -->
+<div class="game-section">
+  <div class="game-header">
+    <div class="game-header-teams">
+      <div class="team-block">
+        <div class="team-abbr">DET</div>
+        <div class="team-name-full">Detroit Pistons</div>
+        <div class="team-record">52-20</div>
+      </div>
+      <div class="vs-badge">vs</div>
+      <div class="team-block">
+        <div class="team-abbr">NOP</div>
+        <div class="team-name-full">New Orleans Pelicans</div>
+        <div class="team-record">25-48</div>
+      </div>
+    </div>
+    <div class="game-meta">
+      <div class="game-meta-venue">Little Caesars Arena</div>
+      <div class="game-meta-time">7:00 PM ET</div>
+    </div>
+  </div>
+
+  <div class="game-body">
+
+    <!-- Elo & Prediction -->
+    <h3 class="section-title">Elo & Prediction</h3>
+    <div class="elo-prediction">
+      <div class="win-prob-bar-container">
+        <div class="win-prob-labels">
+          <span class="win-prob-label text-teal">DET 88.7%</span>
+          <span class="win-prob-label text-amber">NOP 11.3%</span>
+        </div>
+        <div class="win-prob-bar">
+          <div class="win-prob-home" style="width: 88.7%;">88.7%</div>
+          <div class="win-prob-away" style="width: 11.3%;">11.3%</div>
+        </div>
+      </div>
+      <div class="elo-details">
+        <div class="elo-card">
+          <div class="elo-card-label">Projected Spread</div>
+          <div class="elo-card-value">DET -14.3</div>
+          <div class="elo-card-sub">Dominant home favorite</div>
+        </div>
+        <div class="elo-card">
+          <div class="elo-card-label">DET Elo</div>
+          <div class="elo-card-value">1697.5</div>
+          <div class="elo-card-sub">Adjusted: 1767.5 (+70 HCA)</div>
+        </div>
+        <div class="elo-card">
+          <div class="elo-card-label">NOP Elo</div>
+          <div class="elo-card-value">1410.0</div>
+          <div class="elo-card-sub">Adjusted: 1410.0 (no adj.)</div>
+        </div>
+        <div class="elo-card">
+          <div class="elo-card-label">Elo Gap</div>
+          <div class="elo-card-value text-coral" style="font-size:1.2rem;">287.5 pts</div>
+          <div class="elo-card-sub">Massive talent differential</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Team Profiles Side-by-Side -->
+    <h3 class="section-title">Team Profiles</h3>
+    <div class="profiles-grid">
+      <div class="profile-col">
+        <div class="profile-col-header">DET Pistons &mdash; 52-20 (.722)</div>
+        <table class="stat-table">
+          <thead><tr><th>Offense</th><th>Value</th><th>Rank</th></tr></thead>
+          <tbody>
+            <tr><td class="stat-label">ORTG</td><td class="stat-num">116.9</td><td><span class="rank-tag rank-top10">#9</span></td></tr>
+            <tr><td class="stat-label">PPG</td><td class="stat-num">117.5</td><td><span class="rank-tag rank-top10">#8</span></td></tr>
+            <tr><td class="stat-label">eFG%</td><td class="stat-num">54.1%</td><td><span class="rank-tag rank-above">#15</span></td></tr>
+            <tr><td class="stat-label">TS%</td><td class="stat-num">57.8%</td><td><span class="rank-tag rank-above">#15</span></td></tr>
+            <tr><td class="stat-label">3PT%</td><td class="stat-num">34.7%</td><td>&mdash;</td></tr>
+            <tr><td class="stat-label">FT%</td><td class="stat-num">76.2%</td><td>&mdash;</td></tr>
+            <tr><td class="stat-label">APG</td><td class="stat-num">27.2</td><td><span class="rank-tag rank-above">#12</span></td></tr>
+            <tr><td class="stat-label">TOV/G</td><td class="stat-num">14.9</td><td><span class="rank-tag rank-below">#20</span></td></tr>
+            <tr><td class="stat-label">OREB%</td><td class="stat-num">35.5%</td><td><span class="rank-tag rank-elite">#3 (elite)</span></td></tr>
+            <tr><td class="stat-label">Pace</td><td class="stat-num">100.0</td><td><span class="rank-tag rank-below">#19</span></td></tr>
+          </tbody>
+        </table>
+        <table class="stat-table" style="margin-top:1rem;">
+          <thead><tr><th>Defense</th><th>Value</th><th>Rank</th></tr></thead>
+          <tbody>
+            <tr><td class="stat-label">DRTG</td><td class="stat-num">109.0</td><td><span class="rank-tag rank-elite">#2 (elite)</span></td></tr>
+            <tr><td class="stat-label">Opp PPG</td><td class="stat-num">109.8</td><td>&mdash;</td></tr>
+            <tr><td class="stat-label">Opp FG%</td><td class="stat-num">44.4%</td><td>&mdash;</td></tr>
+            <tr><td class="stat-label">Opp 3PT%</td><td class="stat-num">34.8%</td><td>&mdash;</td></tr>
+            <tr><td class="stat-label">SPG</td><td class="stat-num">10.5</td><td><span class="rank-tag rank-elite">#1 (elite)</span></td></tr>
+            <tr><td class="stat-label">BPG</td><td class="stat-num">6.3</td><td><span class="rank-tag rank-elite">#1 (elite)</span></td></tr>
+            <tr><td class="stat-label">DREB%</td><td class="stat-num">68.9%</td><td><span class="rank-tag rank-below">#19</span></td></tr>
+          </tbody>
+        </table>
+        <table class="stat-table" style="margin-top:1rem;">
+          <thead><tr><th>Overall</th><th>Value</th><th>Rank</th></tr></thead>
+          <tbody>
+            <tr><td class="stat-label">Net Rating</td><td class="stat-num fw-600">+7.9</td><td><span class="rank-tag rank-elite">#3 (elite)</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="profile-col">
+        <div class="profile-col-header">NOP Pelicans &mdash; 25-48 (.342)</div>
+        <table class="stat-table">
+          <thead><tr><th>Offense</th><th>Value</th><th>Rank</th></tr></thead>
+          <tbody>
+            <tr><td class="stat-label">ORTG</td><td class="stat-num">113.6</td><td><span class="rank-tag rank-below">#20</span></td></tr>
+            <tr><td class="stat-label">PPG</td><td class="stat-num">115.5</td><td><span class="rank-tag rank-below">#16</span></td></tr>
+            <tr><td class="stat-label">eFG%</td><td class="stat-num">52.9%</td><td><span class="rank-tag rank-bottom5">#28</span></td></tr>
+            <tr><td class="stat-label">TS%</td><td class="stat-num">57.0%</td><td><span class="rank-tag rank-bottom10">#23</span></td></tr>
+            <tr><td class="stat-label">3PT%</td><td class="stat-num">34.8%</td><td>&mdash;</td></tr>
+            <tr><td class="stat-label">FT%</td><td class="stat-num">78.7%</td><td>&mdash;</td></tr>
+            <tr><td class="stat-label">APG</td><td class="stat-num">25.4</td><td><span class="rank-tag rank-bottom10">#22</span></td></tr>
+            <tr><td class="stat-label">TOV/G</td><td class="stat-num">14.2</td><td><span class="rank-tag rank-above">#11</span></td></tr>
+            <tr><td class="stat-label">OREB%</td><td class="stat-num">31.3%</td><td><span class="rank-tag rank-top10">#8</span></td></tr>
+            <tr><td class="stat-label">Pace</td><td class="stat-num">101.0</td><td><span class="rank-tag rank-above">#11</span></td></tr>
+          </tbody>
+        </table>
+        <table class="stat-table" style="margin-top:1rem;">
+          <thead><tr><th>Defense</th><th>Value</th><th>Rank</th></tr></thead>
+          <tbody>
+            <tr><td class="stat-label">DRTG</td><td class="stat-num">117.2</td><td><span class="rank-tag rank-bottom10">#24</span></td></tr>
+            <tr><td class="stat-label">Opp PPG</td><td class="stat-num">119.2</td><td>&mdash;</td></tr>
+            <tr><td class="stat-label">Opp FG%</td><td class="stat-num">47.5%</td><td>&mdash;</td></tr>
+            <tr><td class="stat-label">Opp 3PT%</td><td class="stat-num">34.8%</td><td>&mdash;</td></tr>
+            <tr><td class="stat-label">SPG</td><td class="stat-num">8.8</td><td><span class="rank-tag rank-above">#11</span></td></tr>
+            <tr><td class="stat-label">BPG</td><td class="stat-num">5.1</td><td><span class="rank-tag rank-above">#12</span></td></tr>
+            <tr><td class="stat-label">DREB%</td><td class="stat-num">67.5%</td><td><span class="rank-tag rank-bottom5">#28</span></td></tr>
+          </tbody>
+        </table>
+        <table class="stat-table" style="margin-top:1rem;">
+          <thead><tr><th>Overall</th><th>Value</th><th>Rank</th></tr></thead>
+          <tbody>
+            <tr><td class="stat-label">Net Rating</td><td class="stat-num fw-600 text-coral">-3.6</td><td><span class="rank-tag rank-bottom10">#21</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Four Factors -->
+    <h3 class="section-title">Four Factors Matchup</h3>
+    <div class="four-factors-grid">
+      <div class="ff-matchup-card">
+        <div class="ff-matchup-title">NOP Offense vs DET Defense</div>
+        <div class="ff-row">
+          <div><span class="ff-factor-name">eFG%</span> <span class="ff-factor-weight">(40%)</span></div>
+          <div class="ff-values">
+            <span class="ff-val">52.9%</span><span class="ff-val text-muted">vs</span><span class="ff-val">51.9%</span>
+            <span class="ff-edge edge-pos">+1.0%</span>
+          </div>
+        </div>
+        <div class="ff-row">
+          <div><span class="ff-factor-name">TOV%</span> <span class="ff-factor-weight">(25%)</span></div>
+          <div class="ff-values">
+            <span class="ff-val">14.0%</span><span class="ff-val text-muted">vs</span><span class="ff-val">17.0%</span>
+            <span class="ff-edge edge-pos">+3.0%</span>
+          </div>
+        </div>
+        <div class="ff-row">
+          <div><span class="ff-factor-name">OREB%</span> <span class="ff-factor-weight">(20%)</span></div>
+          <div class="ff-values">
+            <span class="ff-val">31.3%</span><span class="ff-val text-muted">vs</span><span class="ff-val">31.1%</span>
+            <span class="ff-edge edge-neutral">+0.2%</span>
+          </div>
+        </div>
+        <div class="ff-row">
+          <div><span class="ff-factor-name">FT Rate</span> <span class="ff-factor-weight">(15%)</span></div>
+          <div class="ff-values">
+            <span class="ff-val">28.1%</span><span class="ff-val text-muted">vs</span><span class="ff-val">31.9%</span>
+            <span class="ff-edge edge-neg">-3.8%</span>
+          </div>
+        </div>
+        <div style="margin-top: 0.75rem;">
+          <span class="stat-num" style="font-size: 0.8rem;">Weighted Score: <strong class="text-teal">+0.0062</strong></span>
+        </div>
+      </div>
+      <div class="ff-matchup-card">
+        <div class="ff-matchup-title">DET Offense vs NOP Defense</div>
+        <div class="ff-row">
+          <div><span class="ff-factor-name">eFG%</span> <span class="ff-factor-weight">(40%)</span></div>
+          <div class="ff-values">
+            <span class="ff-val">54.1%</span><span class="ff-val text-muted">vs</span><span class="ff-val">55.2%</span>
+            <span class="ff-edge edge-neg">-1.1%</span>
+          </div>
+        </div>
+        <div class="ff-row">
+          <div><span class="ff-factor-name">TOV%</span> <span class="ff-factor-weight">(25%)</span></div>
+          <div class="ff-values">
+            <span class="ff-val">14.8%</span><span class="ff-val text-muted">vs</span><span class="ff-val">14.3%</span>
+            <span class="ff-edge edge-neg">-0.5%</span>
+          </div>
+        </div>
+        <div class="ff-row">
+          <div><span class="ff-factor-name">OREB%</span> <span class="ff-factor-weight">(20%)</span></div>
+          <div class="ff-values">
+            <span class="ff-val">35.5%</span><span class="ff-val text-muted">vs</span><span class="ff-val">32.5%</span>
+            <span class="ff-edge edge-pos">+3.0%</span>
+          </div>
+        </div>
+        <div class="ff-row">
+          <div><span class="ff-factor-name">FT Rate</span> <span class="ff-factor-weight">(15%)</span></div>
+          <div class="ff-values">
+            <span class="ff-val">29.3%</span><span class="ff-val text-muted">vs</span><span class="ff-val">25.8%</span>
+            <span class="ff-edge edge-pos">+3.5%</span>
+          </div>
+        </div>
+        <div style="margin-top: 0.75rem;">
+          <span class="stat-num" style="font-size: 0.8rem;">Weighted Score: <strong class="text-teal">+0.0056</strong></span>
+        </div>
+      </div>
+    </div>
+    <div class="ff-grade-box">
+      <span class="ff-grade-letter text-amber">C</span>
+      <div>
+        <div class="ff-grade-text">Four Factors grade favors <strong>NOP</strong></div>
+        <div class="ff-grade-text" style="font-size:0.75rem;">Net advantage: +0.0006 (marginal)</div>
+      </div>
+    </div>
+
+    <!-- Cross-Matchup Analysis -->
+    <h3 class="section-title">Cross-Matchup Analysis</h3>
+    <div class="cross-matchup-grid">
+      <div class="cross-card">
+        <div class="cross-card-title">Shooting: DET eFG% vs NOP Def eFG%</div>
+        <div class="cross-stat-row"><span class="cross-stat-label">DET Offensive eFG%</span><span class="cross-stat-val">54.1%</span></div>
+        <div class="cross-stat-row"><span class="cross-stat-label">NOP Opp eFG% Allowed</span><span class="cross-stat-val">55.2%</span></div>
+        <div class="cross-stat-row"><span class="cross-stat-label">Edge</span><span class="cross-stat-val text-coral">-1.1%</span></div>
+        <div style="margin-top:0.5rem;font-size:0.8rem;color:var(--muted);">Neutral -- NOP defense slightly better than DET's expected output</div>
+      </div>
+      <div class="cross-card">
+        <div class="cross-card-title">Shooting: NOP eFG% vs DET Def eFG%</div>
+        <div class="cross-stat-row"><span class="cross-stat-label">NOP Offensive eFG%</span><span class="cross-stat-val">52.9%</span></div>
+        <div class="cross-stat-row"><span class="cross-stat-label">DET Opp eFG% Allowed</span><span class="cross-stat-val">51.9%</span></div>
+        <div class="cross-stat-row"><span class="cross-stat-label">Edge</span><span class="cross-stat-val text-teal">+1.0%</span></div>
+      </div>
+      <div class="cross-card">
+        <div class="cross-card-title">Turnover Battle</div>
+        <div class="cross-stat-row"><span class="cross-stat-label">DET Forces (Opp TOV%)</span><span class="cross-stat-val text-teal">17.0%</span></div>
+        <div class="cross-stat-row"><span class="cross-stat-label">NOP TOV Rate</span><span class="cross-stat-val">14.0%</span></div>
+        <div class="cross-stat-row"><span class="cross-stat-label">Gap</span><span class="cross-stat-val text-teal">+3.0% DET</span></div>
+        <div style="margin-top:0.5rem;font-size:0.8rem;color:var(--coral);">DET forces turnovers at 17.0% vs NOP's offense at 14.0%</div>
+      </div>
+      <div class="cross-card">
+        <div class="cross-card-title">3PT Matchup</div>
+        <div class="cross-stat-row"><span class="cross-stat-label">DET 3PT% vs NOP Allowing</span><span class="cross-stat-val">34.7% vs 34.8%</span></div>
+        <div class="cross-stat-row"><span class="cross-stat-label">NOP 3PT% vs DET Allowing</span><span class="cross-stat-val">34.8% vs 34.8%</span></div>
+        <div style="margin-top:0.5rem;font-size:0.8rem;color:var(--muted);">Dead even from deep -- neither team has a perimeter advantage</div>
+      </div>
+      <div class="cross-card">
+        <div class="cross-card-title">Rebounding Matchup</div>
+        <div class="cross-stat-row"><span class="cross-stat-label">DET OREB% / NOP Opp OREB%</span><span class="cross-stat-val">35.5% / 32.5%</span></div>
+        <div class="cross-stat-row"><span class="cross-stat-label">NOP OREB% / DET Opp OREB%</span><span class="cross-stat-val">31.3% / 31.1%</span></div>
+        <div style="margin-top:0.5rem;font-size:0.8rem;color:var(--teal);">DET has the offensive rebounding edge, NOP roughly even</div>
+      </div>
+      <div class="cross-card">
+        <div class="cross-card-title">Free Throw Rate</div>
+        <div class="cross-stat-row"><span class="cross-stat-label">DET FTA Rate</span><span class="cross-stat-val">29.3%</span></div>
+        <div class="cross-stat-row"><span class="cross-stat-label">NOP FTA Rate</span><span class="cross-stat-val">28.1%</span></div>
+        <div style="margin-top:0.5rem;font-size:0.8rem;color:var(--amber);">DET gets to the line more -- 3.8% edge over NOP's defense</div>
+      </div>
+    </div>
+
+    <!-- Scoring Style -->
+    <h3 class="section-title">Scoring Style Comparison</h3>
+    <div class="chart-container">
+      <canvas id="chart-scoring-g2"></canvas>
+    </div>
+
+    <!-- Recent Form -->
+    <h3 class="section-title">Recent Form</h3>
+    <div class="form-grid">
+      <div class="form-card">
+        <div class="form-card-header hot">DET -- HOT (L5 significantly above season avg)</div>
+        <div class="form-card-body">
+          <div class="form-stat-row"><span class="form-stat-label">Last 5</span><span class="form-stat-val text-teal">4-1</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">Last 10</span><span class="form-stat-val">7-3</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L5 PPG</span><span class="form-stat-val">120.8</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L10 PPG</span><span class="form-stat-val">119.3</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L5 Net Rating</span><span class="form-stat-val text-teal">+10.5</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L10 Net Rating</span><span class="form-stat-val text-teal">+10.8</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L5 ORTG / DRTG</span><span class="form-stat-val">119.1 / 108.6</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L5 FG%</span><span class="form-stat-val">49.0%</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L5 3PT%</span><span class="form-stat-val">32.8%</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L5 +/-</span><span class="form-stat-val text-teal">+10.2</span></div>
+        </div>
+      </div>
+      <div class="form-card">
+        <div class="form-card-header hot">NOP -- HOT (L5 significantly above season avg)</div>
+        <div class="form-card-body">
+          <div class="form-stat-row"><span class="form-stat-label">Last 5</span><span class="form-stat-val">3-2</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">Last 10</span><span class="form-stat-val">6-4</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L5 PPG</span><span class="form-stat-val">116.0</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L10 PPG</span><span class="form-stat-val">119.4</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L5 Net Rating</span><span class="form-stat-val text-teal">+6.2</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L10 Net Rating</span><span class="form-stat-val text-teal">+6.8</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L5 ORTG / DRTG</span><span class="form-stat-val">118.6 / 112.4</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L5 FG%</span><span class="form-stat-val">49.1%</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L5 3PT%</span><span class="form-stat-val">37.2%</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L5 +/-</span><span class="form-stat-val text-teal">+5.8</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Key Players -->
+    <h3 class="section-title">Key Players</h3>
+    <div class="players-table-wrap">
+      <table class="players-table">
+        <thead>
+          <tr><th>Player</th><th>PPG</th><th>RPG</th><th>APG</th><th>TS%</th><th>USG%</th><th>+/-</th><th>PIE</th><th>GP</th></tr>
+        </thead>
+        <tbody>
+          <tr style="background:rgba(42,125,111,0.03);">
+            <td><span style="color:var(--teal);font-size:0.65rem;margin-right:0.3rem;">DET</span>Cade Cunningham</td>
+            <td class="best-in-col">24.5</td><td>5.6</td><td class="best-in-col">9.9</td><td>56.7%</td><td class="best-in-col">29.8%</td><td class="best-in-col">+7.8</td><td>0.161</td><td>61</td>
+          </tr>
+          <tr style="background:rgba(42,125,111,0.03);">
+            <td><span style="color:var(--teal);font-size:0.65rem;margin-right:0.3rem;">DET</span>Jalen Duren</td>
+            <td>19.3</td><td class="best-in-col">10.6</td><td>1.7</td><td class="best-in-col">67.7%</td><td>23.1%</td><td>+6.9</td><td class="best-in-col">0.176</td><td>62</td>
+          </tr>
+          <tr style="background:rgba(42,125,111,0.03);">
+            <td><span style="color:var(--teal);font-size:0.65rem;margin-right:0.3rem;">DET</span>Tobias Harris</td>
+            <td>13.3</td><td>5.2</td><td>2.4</td><td>56.3%</td><td>18.0%</td><td>+4.9</td><td>0.108</td><td>55</td>
+          </tr>
+          <tr style="background:rgba(42,125,111,0.03);">
+            <td><span style="color:var(--teal);font-size:0.65rem;margin-right:0.3rem;">DET</span>Duncan Robinson</td>
+            <td>11.9</td><td>2.7</td><td>2.1</td><td>61.6%</td><td>15.0%</td><td>+6.3</td><td>0.075</td><td>70</td>
+          </tr>
+          <tr style="background:rgba(42,125,111,0.03);">
+            <td><span style="color:var(--teal);font-size:0.65rem;margin-right:0.3rem;">DET</span>Ausar Thompson</td>
+            <td>10.0</td><td>5.8</td><td>3.0</td><td>53.6%</td><td>17.2%</td><td>+4.5</td><td>0.099</td><td>63</td>
+          </tr>
+          <tr class="team-separator" style="background:rgba(200,131,26,0.03);">
+            <td><span style="color:var(--amber);font-size:0.65rem;margin-right:0.3rem;">NOP</span>Trey Murphy III</td>
+            <td>21.7</td><td>5.7</td><td>3.8</td><td>61.4%</td><td>22.4%</td><td>-2.3</td><td>0.123</td><td>64</td>
+          </tr>
+          <tr style="background:rgba(200,131,26,0.03);">
+            <td><span style="color:var(--amber);font-size:0.65rem;margin-right:0.3rem;">NOP</span>Zion Williamson</td>
+            <td>21.4</td><td>5.8</td><td>3.3</td><td>64.3%</td><td>25.2%</td><td>-0.7</td><td>0.142</td><td>56</td>
+          </tr>
+          <tr style="background:rgba(200,131,26,0.03);">
+            <td><span style="color:var(--amber);font-size:0.65rem;margin-right:0.3rem;">NOP</span>Dejounte Murray</td>
+            <td>17.6</td><td>5.1</td><td>6.7</td><td>60.4%</td><td>27.0%</td><td>+5.6</td><td>0.145</td><td>11</td>
+          </tr>
+          <tr style="background:rgba(200,131,26,0.03);">
+            <td><span style="color:var(--amber);font-size:0.65rem;margin-right:0.3rem;">NOP</span>Saddiq Bey</td>
+            <td>17.4</td><td>5.7</td><td>2.6</td><td>57.9%</td><td>21.0%</td><td>-2.1</td><td>0.114</td><td>66</td>
+          </tr>
+          <tr style="background:rgba(200,131,26,0.03);">
+            <td><span style="color:var(--amber);font-size:0.65rem;margin-right:0.3rem;">NOP</span>Jeremiah Fears</td>
+            <td>13.1</td><td>3.6</td><td>3.2</td><td>51.8%</td><td>24.1%</td><td>-3.4</td><td>0.088</td><td>73</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Insight Flags -->
+    <h3 class="section-title">Insight Flags</h3>
+    <div class="flags-grid">
+      <div class="flag-pill flag-mismatch">
+        <span class="flag-icon">GAP</span>
+        Large talent gap: DET (+7.9 net) vs NOP (-3.6 net)
+      </div>
+      <div class="flag-pill flag-turnovers">
+        <span class="flag-icon">TOV</span>
+        DET forces turnovers (17.0%) vs NOP's offense (14.0%)
+      </div>
+      <div class="flag-pill flag-four_factors">
+        <span class="flag-icon">FF</span>
+        NOP has a 3.0% edge in ball security
+      </div>
+      <div class="flag-pill flag-four_factors">
+        <span class="flag-icon">FF</span>
+        DET has a 3.8% edge in getting to the line
+      </div>
+      <div class="flag-pill flag-trend">
+        <span class="flag-icon">HOT</span>
+        DET is HOT -- L5 net rating significantly above season average
+      </div>
+      <div class="flag-pill flag-trend">
+        <span class="flag-icon">HOT</span>
+        NOP is HOT -- L5 net rating significantly above season average
+      </div>
+      <div class="flag-pill flag-shooting">
+        <span class="flag-icon">EFG</span>
+        Neutral shooting matchup
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ GAME 3: ORL vs SAC ═══════════════════════════════════════ -->
+<div class="game-section">
+  <div class="game-header">
+    <div class="game-header-teams">
+      <div class="team-block">
+        <div class="team-abbr">ORL</div>
+        <div class="team-name-full">Orlando Magic</div>
+        <div class="team-record">38-34</div>
+      </div>
+      <div class="vs-badge">vs</div>
+      <div class="team-block">
+        <div class="team-abbr">SAC</div>
+        <div class="team-name-full">Sacramento Kings</div>
+        <div class="team-record">19-54</div>
+      </div>
+    </div>
+    <div class="game-meta">
+      <div class="game-meta-venue">Kia Center</div>
+      <div class="game-meta-time">7:00 PM ET</div>
+    </div>
+  </div>
+
+  <div class="game-body">
+
+    <!-- Elo & Prediction -->
+    <h3 class="section-title">Elo & Prediction</h3>
+    <div class="elo-prediction">
+      <div class="win-prob-bar-container">
+        <div class="win-prob-labels">
+          <span class="win-prob-label text-teal">ORL 87.6%</span>
+          <span class="win-prob-label text-amber">SAC 12.4%</span>
+        </div>
+        <div class="win-prob-bar">
+          <div class="win-prob-home" style="width: 87.6%;">87.6%</div>
+          <div class="win-prob-away" style="width: 12.4%;">12.4%</div>
+        </div>
+      </div>
+      <div class="elo-details">
+        <div class="elo-card">
+          <div class="elo-card-label">Projected Spread</div>
+          <div class="elo-card-value">ORL -13.6</div>
+          <div class="elo-card-sub">Heavy home favorite</div>
+        </div>
+        <div class="elo-card">
+          <div class="elo-card-label">ORL Elo</div>
+          <div class="elo-card-value">1517.5</div>
+          <div class="elo-card-sub">Adjusted: 1587.5 (+70 HCA)</div>
+        </div>
+        <div class="elo-card">
+          <div class="elo-card-label">SAC Elo</div>
+          <div class="elo-card-value">1247.5</div>
+          <div class="elo-card-sub">Adjusted: 1247.5 (no adj.)</div>
+        </div>
+        <div class="elo-card">
+          <div class="elo-card-label">Elo Gap</div>
+          <div class="elo-card-value text-coral" style="font-size:1.2rem;">270.0 pts</div>
+          <div class="elo-card-sub">Massive talent differential</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Team Profiles Side-by-Side -->
+    <h3 class="section-title">Team Profiles</h3>
+    <div class="profiles-grid">
+      <div class="profile-col">
+        <div class="profile-col-header">ORL Magic &mdash; 38-34 (.528)</div>
+        <table class="stat-table">
+          <thead><tr><th>Offense</th><th>Value</th><th>Rank</th></tr></thead>
+          <tbody>
+            <tr><td class="stat-label">ORTG</td><td class="stat-num">114.6</td><td><span class="rank-tag rank-above">#15</span></td></tr>
+            <tr><td class="stat-label">PPG</td><td class="stat-num">115.7</td><td><span class="rank-tag rank-above">#15</span></td></tr>
+            <tr><td class="stat-label">eFG%</td><td class="stat-num">53.0%</td><td><span class="rank-tag rank-bottom10">#25</span></td></tr>
+            <tr><td class="stat-label">TS%</td><td class="stat-num">57.5%</td><td><span class="rank-tag rank-below">#19</span></td></tr>
+            <tr><td class="stat-label">3PT%</td><td class="stat-num">34.4%</td><td>&mdash;</td></tr>
+            <tr><td class="stat-label">FT%</td><td class="stat-num">80.3%</td><td>&mdash;</td></tr>
+            <tr><td class="stat-label">APG</td><td class="stat-num">26.4</td><td><span class="rank-tag rank-above">#15</span></td></tr>
+            <tr><td class="stat-label">TOV/G</td><td class="stat-num">13.6</td><td><span class="rank-tag rank-top5">#4 (top 5)</span></td></tr>
+            <tr><td class="stat-label">OREB%</td><td class="stat-num">30.5%</td><td><span class="rank-tag rank-above">#13</span></td></tr>
+            <tr><td class="stat-label">Pace</td><td class="stat-num">100.0</td><td><span class="rank-tag rank-below">#18</span></td></tr>
+          </tbody>
+        </table>
+        <table class="stat-table" style="margin-top:1rem;">
+          <thead><tr><th>Defense</th><th>Value</th><th>Rank</th></tr></thead>
+          <tbody>
+            <tr><td class="stat-label">DRTG</td><td class="stat-num">113.8</td><td><span class="rank-tag rank-above">#15</span></td></tr>
+            <tr><td class="stat-label">Opp PPG</td><td class="stat-num">114.8</td><td>&mdash;</td></tr>
+            <tr><td class="stat-label">Opp FG%</td><td class="stat-num">47.6%</td><td>&mdash;</td></tr>
+            <tr><td class="stat-label">Opp 3PT%</td><td class="stat-num">35.2%</td><td>&mdash;</td></tr>
+            <tr><td class="stat-label">SPG</td><td class="stat-num">8.6</td><td><span class="rank-tag rank-above">#15</span></td></tr>
+            <tr><td class="stat-label">BPG</td><td class="stat-num">4.8</td><td><span class="rank-tag rank-below">#17</span></td></tr>
+            <tr><td class="stat-label">DREB%</td><td class="stat-num">70.8%</td><td><span class="rank-tag rank-top10">#7</span></td></tr>
+          </tbody>
+        </table>
+        <table class="stat-table" style="margin-top:1rem;">
+          <thead><tr><th>Overall</th><th>Value</th><th>Rank</th></tr></thead>
+          <tbody>
+            <tr><td class="stat-label">Net Rating</td><td class="stat-num fw-600">+0.7</td><td><span class="rank-tag rank-below">#17</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="profile-col">
+        <div class="profile-col-header">SAC Kings &mdash; 19-54 (.260)</div>
+        <table class="stat-table">
+          <thead><tr><th>Offense</th><th>Value</th><th>Rank</th></tr></thead>
+          <tbody>
+            <tr><td class="stat-label">ORTG</td><td class="stat-num">110.0</td><td><span class="rank-tag rank-bottom5">#27</span></td></tr>
+            <tr><td class="stat-label">PPG</td><td class="stat-num">110.8</td><td><span class="rank-tag rank-bottom5">#28</span></td></tr>
+            <tr><td class="stat-label">eFG%</td><td class="stat-num">52.2%</td><td><span class="rank-tag rank-bottom3">#30</span></td></tr>
+            <tr><td class="stat-label">TS%</td><td class="stat-num">55.8%</td><td><span class="rank-tag rank-bottom3">#30</span></td></tr>
+            <tr><td class="stat-label">3PT%</td><td class="stat-num">33.9%</td><td>&mdash;</td></tr>
+            <tr><td class="stat-label">FT%</td><td class="stat-num">77.5%</td><td>&mdash;</td></tr>
+            <tr><td class="stat-label">APG</td><td class="stat-num">25.6</td><td><span class="rank-tag rank-below">#19</span></td></tr>
+            <tr><td class="stat-label">TOV/G</td><td class="stat-num">14.2</td><td><span class="rank-tag rank-above">#12</span></td></tr>
+            <tr><td class="stat-label">OREB%</td><td class="stat-num">29.1%</td><td><span class="rank-tag rank-below">#20</span></td></tr>
+            <tr><td class="stat-label">Pace</td><td class="stat-num">100.4</td><td><span class="rank-tag rank-above">#15</span></td></tr>
+          </tbody>
+        </table>
+        <table class="stat-table" style="margin-top:1rem;">
+          <thead><tr><th>Defense</th><th>Value</th><th>Rank</th></tr></thead>
+          <tbody>
+            <tr><td class="stat-label">DRTG</td><td class="stat-num">120.1</td><td><span class="rank-tag rank-bottom5">#28</span></td></tr>
+            <tr><td class="stat-label">Opp PPG</td><td class="stat-num">121.2</td><td>&mdash;</td></tr>
+            <tr><td class="stat-label">Opp FG%</td><td class="stat-num">49.4%</td><td>&mdash;</td></tr>
+            <tr><td class="stat-label">Opp 3PT%</td><td class="stat-num">37.5%</td><td>&mdash;</td></tr>
+            <tr><td class="stat-label">SPG</td><td class="stat-num">8.1</td><td><span class="rank-tag rank-below">#20</span></td></tr>
+            <tr><td class="stat-label">BPG</td><td class="stat-num">4.5</td><td><span class="rank-tag rank-bottom10">#21</span></td></tr>
+            <tr><td class="stat-label">DREB%</td><td class="stat-num">68.3%</td><td><span class="rank-tag rank-bottom10">#23</span></td></tr>
+          </tbody>
+        </table>
+        <table class="stat-table" style="margin-top:1rem;">
+          <thead><tr><th>Overall</th><th>Value</th><th>Rank</th></tr></thead>
+          <tbody>
+            <tr><td class="stat-label">Net Rating</td><td class="stat-num fw-600 text-coral">-10.1</td><td><span class="rank-tag rank-bottom3">#29</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Four Factors -->
+    <h3 class="section-title">Four Factors Matchup</h3>
+    <div class="four-factors-grid">
+      <div class="ff-matchup-card">
+        <div class="ff-matchup-title">SAC Offense vs ORL Defense</div>
+        <div class="ff-row">
+          <div><span class="ff-factor-name">eFG%</span> <span class="ff-factor-weight">(40%)</span></div>
+          <div class="ff-values">
+            <span class="ff-val">52.2%</span><span class="ff-val text-muted">vs</span><span class="ff-val">54.4%</span>
+            <span class="ff-edge edge-neg">-2.2%</span>
+          </div>
+        </div>
+        <div class="ff-row">
+          <div><span class="ff-factor-name">TOV%</span> <span class="ff-factor-weight">(25%)</span></div>
+          <div class="ff-values">
+            <span class="ff-val">14.1%</span><span class="ff-val text-muted">vs</span><span class="ff-val">14.6%</span>
+            <span class="ff-edge edge-pos">+0.5%</span>
+          </div>
+        </div>
+        <div class="ff-row">
+          <div><span class="ff-factor-name">OREB%</span> <span class="ff-factor-weight">(20%)</span></div>
+          <div class="ff-values">
+            <span class="ff-val">29.1%</span><span class="ff-val text-muted">vs</span><span class="ff-val">29.2%</span>
+            <span class="ff-edge edge-neutral">-0.1%</span>
+          </div>
+        </div>
+        <div class="ff-row">
+          <div><span class="ff-factor-name">FT Rate</span> <span class="ff-factor-weight">(15%)</span></div>
+          <div class="ff-values">
+            <span class="ff-val">25.6%</span><span class="ff-val text-muted">vs</span><span class="ff-val">28.6%</span>
+            <span class="ff-edge edge-neg">-3.0%</span>
+          </div>
+        </div>
+        <div style="margin-top: 0.75rem;">
+          <span class="stat-num" style="font-size: 0.8rem;">Weighted Score: <strong class="text-coral">-0.0123</strong></span>
+        </div>
+      </div>
+      <div class="ff-matchup-card">
+        <div class="ff-matchup-title">ORL Offense vs SAC Defense</div>
+        <div class="ff-row">
+          <div><span class="ff-factor-name">eFG%</span> <span class="ff-factor-weight">(40%)</span></div>
+          <div class="ff-values">
+            <span class="ff-val">53.0%</span><span class="ff-val text-muted">vs</span><span class="ff-val">57.0%</span>
+            <span class="ff-edge edge-neg">-4.0%</span>
+          </div>
+        </div>
+        <div class="ff-row">
+          <div><span class="ff-factor-name">TOV%</span> <span class="ff-factor-weight">(25%)</span></div>
+          <div class="ff-values">
+            <span class="ff-val">13.5%</span><span class="ff-val text-muted">vs</span><span class="ff-val">13.9%</span>
+            <span class="ff-edge edge-pos">+0.4%</span>
+          </div>
+        </div>
+        <div class="ff-row">
+          <div><span class="ff-factor-name">OREB%</span> <span class="ff-factor-weight">(20%)</span></div>
+          <div class="ff-values">
+            <span class="ff-val">30.5%</span><span class="ff-val text-muted">vs</span><span class="ff-val">31.7%</span>
+            <span class="ff-edge edge-neg">-1.2%</span>
+          </div>
+        </div>
+        <div class="ff-row">
+          <div><span class="ff-factor-name">FT Rate</span> <span class="ff-factor-weight">(15%)</span></div>
+          <div class="ff-values">
+            <span class="ff-val">30.4%</span><span class="ff-val text-muted">vs</span><span class="ff-val">27.4%</span>
+            <span class="ff-edge edge-pos">+3.0%</span>
+          </div>
+        </div>
+        <div style="margin-top: 0.75rem;">
+          <span class="stat-num" style="font-size: 0.8rem;">Weighted Score: <strong class="text-coral">-0.0129</strong></span>
+        </div>
+      </div>
+    </div>
+    <div class="ff-grade-box">
+      <span class="ff-grade-letter text-amber">C</span>
+      <div>
+        <div class="ff-grade-text">Four Factors grade favors <strong>SAC</strong></div>
+        <div class="ff-grade-text" style="font-size:0.75rem;">Net advantage: +0.0006 (marginal -- both negative scores reflect poor efficiency)</div>
+      </div>
+    </div>
+
+    <!-- Cross-Matchup Analysis -->
+    <h3 class="section-title">Cross-Matchup Analysis</h3>
+    <div class="cross-matchup-grid">
+      <div class="cross-card">
+        <div class="cross-card-title">Shooting: ORL eFG% vs SAC Def eFG%</div>
+        <div class="cross-stat-row"><span class="cross-stat-label">ORL Offensive eFG%</span><span class="cross-stat-val">53.0%</span></div>
+        <div class="cross-stat-row"><span class="cross-stat-label">SAC Opp eFG% Allowed</span><span class="cross-stat-val">57.0%</span></div>
+        <div class="cross-stat-row"><span class="cross-stat-label">Edge</span><span class="cross-stat-val text-coral">-4.0%</span></div>
+        <div style="margin-top:0.5rem;font-size:0.8rem;color:var(--coral);">SAC defense should limit ORL's shooting (ORL shoots below SAC's defensive average)</div>
+      </div>
+      <div class="cross-card">
+        <div class="cross-card-title">Shooting: SAC eFG% vs ORL Def eFG%</div>
+        <div class="cross-stat-row"><span class="cross-stat-label">SAC Offensive eFG%</span><span class="cross-stat-val">52.2%</span></div>
+        <div class="cross-stat-row"><span class="cross-stat-label">ORL Opp eFG% Allowed</span><span class="cross-stat-val">54.4%</span></div>
+        <div class="cross-stat-row"><span class="cross-stat-label">Edge</span><span class="cross-stat-val text-coral">-2.2%</span></div>
+      </div>
+      <div class="cross-card">
+        <div class="cross-card-title">3PT: ORL 34.4% vs SAC Allowing 37.5%</div>
+        <div class="cross-stat-row"><span class="cross-stat-label">Edge</span><span class="cross-stat-val text-coral">-3.1% (ORL below SAC avg)</span></div>
+        <div style="margin-top:0.5rem;font-size:0.8rem;color:var(--muted);">ORL shoots below SAC's already poor 3PT defense -- inefficiency on both sides</div>
+      </div>
+      <div class="cross-card">
+        <div class="cross-card-title">3PT: SAC 33.9% vs ORL Allowing 35.2%</div>
+        <div class="cross-stat-row"><span class="cross-stat-label">Edge</span><span class="cross-stat-val text-coral">-1.3%</span></div>
+      </div>
+      <div class="cross-card">
+        <div class="cross-card-title">Turnover Battle</div>
+        <div class="cross-stat-row"><span class="cross-stat-label">ORL TOV Rate vs SAC Forcing</span><span class="cross-stat-val">13.5% vs 13.9%</span></div>
+        <div class="cross-stat-row"><span class="cross-stat-label">SAC TOV Rate vs ORL Forcing</span><span class="cross-stat-val">14.1% vs 14.6%</span></div>
+        <div style="margin-top:0.5rem;font-size:0.8rem;color:var(--muted);">Both edges are minimal -- no turnover advantage either way</div>
+      </div>
+      <div class="cross-card">
+        <div class="cross-card-title">Rebounding Matchup</div>
+        <div class="cross-stat-row"><span class="cross-stat-label">ORL OREB% / SAC Opp OREB%</span><span class="cross-stat-val">30.5% / 31.7%</span></div>
+        <div class="cross-stat-row"><span class="cross-stat-label">SAC OREB% / ORL Opp OREB%</span><span class="cross-stat-val">29.1% / 29.2%</span></div>
+        <div style="margin-top:0.5rem;font-size:0.8rem;color:var(--muted);">Rebounding roughly even -- neither team creates extra possessions</div>
+      </div>
+    </div>
+
+    <!-- Scoring Style -->
+    <h3 class="section-title">Scoring Style Comparison</h3>
+    <div class="chart-container">
+      <canvas id="chart-scoring-g3"></canvas>
+    </div>
+
+    <!-- Recent Form -->
+    <h3 class="section-title">Recent Form</h3>
+    <div class="form-grid">
+      <div class="form-card">
+        <div class="form-card-header cold">ORL -- COLD (L5 significantly below season avg)</div>
+        <div class="form-card-body">
+          <div class="form-stat-row"><span class="form-stat-label">Last 5</span><span class="form-stat-val text-coral">0-5</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">Last 10</span><span class="form-stat-val">4-6</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L5 PPG</span><span class="form-stat-val">116.0</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L10 PPG</span><span class="form-stat-val">120.7</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L5 Net Rating</span><span class="form-stat-val text-coral">-6.8</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L10 Net Rating</span><span class="form-stat-val">+0.5</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L5 ORTG / DRTG</span><span class="form-stat-val">118.9 / 125.7</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L5 FG%</span><span class="form-stat-val">45.0%</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L5 3PT%</span><span class="form-stat-val">33.7%</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L5 +/-</span><span class="form-stat-val text-coral">-6.4</span></div>
+        </div>
+      </div>
+      <div class="form-card">
+        <div class="form-card-header cold">SAC -- COLD (L5 significantly below season avg)</div>
+        <div class="form-card-body">
+          <div class="form-stat-row"><span class="form-stat-label">Last 5</span><span class="form-stat-val text-coral">2-3</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">Last 10</span><span class="form-stat-val">5-5</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L5 PPG</span><span class="form-stat-val">110.8</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L10 PPG</span><span class="form-stat-val">114.4</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L5 Net Rating</span><span class="form-stat-val text-coral">-16.3</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L10 Net Rating</span><span class="form-stat-val text-coral">-6.8</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L5 ORTG / DRTG</span><span class="form-stat-val">110.8 / 127.1</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L5 FG%</span><span class="form-stat-val">46.6%</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L5 3PT%</span><span class="form-stat-val">37.7%</span></div>
+          <div class="form-stat-row"><span class="form-stat-label">L5 +/-</span><span class="form-stat-val text-coral">-16.8</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Key Players -->
+    <h3 class="section-title">Key Players</h3>
+    <div class="players-table-wrap">
+      <table class="players-table">
+        <thead>
+          <tr><th>Player</th><th>PPG</th><th>RPG</th><th>APG</th><th>TS%</th><th>USG%</th><th>+/-</th><th>PIE</th><th>GP</th></tr>
+        </thead>
+        <tbody>
+          <tr style="background:rgba(42,125,111,0.03);">
+            <td><span style="color:var(--teal);font-size:0.65rem;margin-right:0.3rem;">ORL</span>Paolo Banchero</td>
+            <td class="best-in-col">22.7</td><td class="best-in-col">8.4</td><td class="best-in-col">5.1</td><td>57.1%</td><td class="best-in-col">27.7%</td><td>-0.4</td><td class="best-in-col">0.140</td><td>62</td>
+          </tr>
+          <tr style="background:rgba(42,125,111,0.03);">
+            <td><span style="color:var(--teal);font-size:0.65rem;margin-right:0.3rem;">ORL</span>Franz Wagner</td>
+            <td>21.3</td><td>5.8</td><td>3.6</td><td>59.1%</td><td>25.1%</td><td>+1.3</td><td>0.136</td><td>28</td>
+          </tr>
+          <tr style="background:rgba(42,125,111,0.03);">
+            <td><span style="color:var(--teal);font-size:0.65rem;margin-right:0.3rem;">ORL</span>Desmond Bane</td>
+            <td>20.3</td><td>4.2</td><td>4.2</td><td>60.6%</td><td>22.4%</td><td>+1.1</td><td>0.112</td><td>72</td>
+          </tr>
+          <tr style="background:rgba(42,125,111,0.03);">
+            <td><span style="color:var(--teal);font-size:0.65rem;margin-right:0.3rem;">ORL</span>Anthony Black</td>
+            <td>15.3</td><td>3.9</td><td>3.8</td><td>55.2%</td><td>21.8%</td><td>+0.1</td><td>0.091</td><td>60</td>
+          </tr>
+          <tr style="background:rgba(42,125,111,0.03);">
+            <td><span style="color:var(--teal);font-size:0.65rem;margin-right:0.3rem;">ORL</span>Jalen Suggs</td>
+            <td>13.8</td><td>3.8</td><td>5.3</td><td>56.0%</td><td>22.5%</td><td class="best-in-col">+2.9</td><td>0.111</td><td>47</td>
+          </tr>
+          <tr class="team-separator" style="background:rgba(200,131,26,0.03);">
+            <td><span style="color:var(--amber);font-size:0.65rem;margin-right:0.3rem;">SAC</span>Zach LaVine</td>
+            <td>19.2</td><td>2.8</td><td>2.3</td><td class="best-in-col">61.4%</td><td>23.4%</td><td>-7.9</td><td>0.096</td><td>39</td>
+          </tr>
+          <tr style="background:rgba(200,131,26,0.03);">
+            <td><span style="color:var(--amber);font-size:0.65rem;margin-right:0.3rem;">SAC</span>DeMar DeRozan</td>
+            <td>18.2</td><td>3.0</td><td>4.1</td><td>59.3%</td><td>21.9%</td><td>-8.1</td><td>0.109</td><td>72</td>
+          </tr>
+          <tr style="background:rgba(200,131,26,0.03);">
+            <td><span style="color:var(--amber);font-size:0.65rem;margin-right:0.3rem;">SAC</span>Domantas Sabonis</td>
+            <td>15.8</td><td>11.4</td><td>4.1</td><td>59.0%</td><td>22.3%</td><td>-9.3</td><td>0.131</td><td>19</td>
+          </tr>
+          <tr style="background:rgba(200,131,26,0.03);">
+            <td><span style="color:var(--amber);font-size:0.65rem;margin-right:0.3rem;">SAC</span>Russell Westbrook</td>
+            <td>15.2</td><td>5.4</td><td>6.7</td><td>52.8%</td><td>25.2%</td><td>-7.1</td><td>0.105</td><td>64</td>
+          </tr>
+          <tr style="background:rgba(200,131,26,0.03);">
+            <td><span style="color:var(--amber);font-size:0.65rem;margin-right:0.3rem;">SAC</span>Keegan Murray</td>
+            <td>14.0</td><td>5.7</td><td>1.7</td><td>49.9%</td><td>18.2%</td><td>-7.1</td><td>0.078</td><td>23</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Insight Flags -->
+    <h3 class="section-title">Insight Flags</h3>
+    <div class="flags-grid">
+      <div class="flag-pill flag-mismatch">
+        <span class="flag-icon">GAP</span>
+        Large talent gap: ORL (+0.7 net) vs SAC (-10.1 net)
+      </div>
+      <div class="flag-pill flag-trend cold">
+        <span class="flag-icon">COLD</span>
+        ORL is COLD -- L5 net rating significantly below season average
+      </div>
+      <div class="flag-pill flag-trend cold">
+        <span class="flag-icon">COLD</span>
+        SAC is COLD -- L5 net rating significantly below season average
+      </div>
+      <div class="flag-pill flag-four_factors">
+        <span class="flag-icon">FF</span>
+        ORL has a 2.2% edge in shooting efficiency
+      </div>
+      <div class="flag-pill flag-four_factors">
+        <span class="flag-icon">FF</span>
+        ORL has a 3.0% edge in getting to the line
+      </div>
+      <div class="flag-pill flag-shooting">
+        <span class="flag-icon">EFG</span>
+        SAC defense should limit ORL's shooting
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ ELO POWER RANKINGS ═══════════════════════════════════════ -->
+<div class="power-rankings">
+  <h2 class="section-title" style="font-size: 2rem; border-bottom: none; margin-bottom: 0.5rem;">Elo Power Rankings</h2>
+  <p class="text-muted" style="margin-bottom: 1.5rem; font-size: 0.9rem;">All 30 NBA teams ranked by current Elo rating. Top 5 in teal, bottom 5 in coral.</p>
+  <div class="pr-chart-container">
+    <canvas id="chart-elo-rankings"></canvas>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ SETUP NOTE ═══════════════════════════════════════ -->
+<div class="setup-note">
+  <div class="setup-note-title">Setup Required -- Odds API Key</div>
+  <p>
+    To unlock <strong>picks, line shopping, and value detection</strong>, add your API key from
+    <strong>the-odds-api.com</strong> (free tier available) to your <code>.env</code> file:
+  </p>
+  <p style="margin-top: 0.75rem;">
+    <code>ODDS_API_KEY=your_key_here</code>
+  </p>
+  <p style="margin-top: 0.75rem;">
+    This will enable the model to compare its projected probabilities against 40+ sportsbooks,
+    identify value bets, surface line shopping opportunities, and generate tiered picks (Strong Plays, Leans, Fades).
+  </p>
+</div>
+
+</div><!-- end .content -->
+
+<!-- ═══════════════════════════════════════ FOOTER ═══════════════════════════════════════ -->
+<section class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">NBA EDGE</div>
+    <p><strong>Data Sources:</strong> ESPN API (schedules, stats, player data), NBA.com advanced stats, custom Elo model (K=20, MOV multiplier, seeded from net rating)</p>
+    <p><strong>Model Layers:</strong> Elo power ratings, Four Factors (eFG% 40%, TOV% 25%, OREB% 20%, FTRate 15%), cross-matchup analysis, scoring profiles, defensive profiles, recent form (L5/L10), contextual adjustments (home court, B2B, rest, altitude), key player stats</p>
+    <p><strong>Generated:</strong> March 26, 2026</p>
+    <div class="footer-disclaimer">
+      <strong>Disclaimer:</strong> This dashboard is for informational and entertainment purposes only. It does not constitute financial or gambling advice. All projections are model-based estimates and carry inherent uncertainty. Past performance does not guarantee future results. Please gamble responsibly.
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ CHARTS JS ═══════════════════════════════════════ -->
+<script>
+// -- Chart.js defaults --
+Chart.defaults.font.family = "'DM Sans', sans-serif";
+Chart.defaults.color = '#7A7570';
+
+// -- Scoring Style Charts --
+const scoringCategories = ['Paint', '3-Point', 'Free Throws', 'Fast Break', 'Off Turnovers', 'Midrange'];
+
+function createScoringChart(canvasId, homeLabel, awayLabel, homeData, awayData) {
+  const ctx = document.getElementById(canvasId).getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: scoringCategories,
+      datasets: [
+        {
+          label: homeLabel,
+          data: homeData,
+          backgroundColor: 'rgba(42, 125, 111, 0.7)',
+          borderColor: 'rgba(42, 125, 111, 1)',
+          borderWidth: 1,
+          borderRadius: 4,
+        },
+        {
+          label: awayLabel,
+          data: awayData,
+          backgroundColor: 'rgba(200, 131, 26, 0.7)',
+          borderColor: 'rgba(200, 131, 26, 1)',
+          borderWidth: 1,
+          borderRadius: 4,
+        }
+      ]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: true,
+      plugins: {
+        legend: { position: 'top', labels: { font: { family: "'DM Mono', monospace", size: 11 }, padding: 20 } },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return context.dataset.label + ': ' + context.parsed.x.toFixed(1) + '%';
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          max: 55,
+          ticks: { callback: function(v) { return v + '%'; }, font: { family: "'DM Mono', monospace", size: 11 } },
+          grid: { color: '#E2DDD5' }
+        },
+        y: {
+          ticks: { font: { family: "'DM Sans', sans-serif", size: 12 } },
+          grid: { display: false }
+        }
+      }
+    }
+  });
+}
+
+// Game 1: CHA vs NYK
+createScoringChart('chart-scoring-g1', 'CHA', 'NYK',
+  [39.2, 42.1, 15.5, 11.5, 13.4, 3.2],
+  [40.7, 37.1, 14.6, 13.2, 15.0, 7.6]
+);
+
+// Game 2: DET vs NOP
+createScoringChart('chart-scoring-g2', 'DET', 'NOP',
+  [49.4, 27.6, 17.1, 15.3, 18.5, 5.8],
+  [49.6, 29.5, 17.3, 14.3, 15.7, 3.6]
+);
+
+// Game 3: ORL vs SAC
+createScoringChart('chart-scoring-g3', 'ORL', 'SAC',
+  [44.2, 30.8, 18.7, 13.6, 15.8, 6.3],
+  [45.3, 27.5, 16.0, 12.5, 14.7, 11.2]
+);
+
+// -- Elo Power Rankings --
+const eloData = [
+  { team: 'OKC', elo: 1770.0 },
+  { team: 'SAS', elo: 1700.0 },
+  { team: 'DET', elo: 1697.5 },
+  { team: 'BOS', elo: 1695.0 },
+  { team: 'NYK', elo: 1670.0 },
+  { team: 'CHA', elo: 1617.5 },
+  { team: 'DEN', elo: 1610.0 },
+  { team: 'CLE', elo: 1600.0 },
+  { team: 'HOU', elo: 1597.5 },
+  { team: 'MIN', elo: 1590.0 },
+  { team: 'MIA', elo: 1565.0 },
+  { team: 'ATL', elo: 1542.5 },
+  { team: 'TOR', elo: 1540.0 },
+  { team: 'LAC', elo: 1532.5 },
+  { team: 'LAL', elo: 1532.5 },
+  { team: 'PHX', elo: 1525.0 },
+  { team: 'ORL', elo: 1517.5 },
+  { team: 'GSW', elo: 1507.5 },
+  { team: 'PHI', elo: 1492.5 },
+  { team: 'POR', elo: 1467.5 },
+  { team: 'NOP', elo: 1410.0 },
+  { team: 'MEM', elo: 1397.5 },
+  { team: 'CHI', elo: 1387.5 },
+  { team: 'DAL', elo: 1375.0 },
+  { team: 'MIL', elo: 1352.5 },
+  { team: 'UTA', elo: 1310.0 },
+  { team: 'IND', elo: 1285.0 },
+  { team: 'BKN', elo: 1265.0 },
+  { team: 'SAC', elo: 1247.5 },
+  { team: 'WAS', elo: 1225.0 }
+];
+
+const eloLabels = eloData.map(d => d.team);
+const eloValues = eloData.map(d => d.elo);
+const eloColors = eloData.map((d, i) => {
+  if (i < 5) return 'rgba(42, 125, 111, 0.8)';
+  if (i >= 25) return 'rgba(212, 96, 58, 0.8)';
+  return 'rgba(200, 131, 26, 0.6)';
+});
+const eloBorders = eloData.map((d, i) => {
+  if (i < 5) return 'rgba(42, 125, 111, 1)';
+  if (i >= 25) return 'rgba(212, 96, 58, 1)';
+  return 'rgba(200, 131, 26, 1)';
+});
+
+const eloCtx = document.getElementById('chart-elo-rankings').getContext('2d');
+new Chart(eloCtx, {
+  type: 'bar',
+  data: {
+    labels: eloLabels,
+    datasets: [{
+      label: 'Elo Rating',
+      data: eloValues,
+      backgroundColor: eloColors,
+      borderColor: eloBorders,
+      borderWidth: 1,
+      borderRadius: 3,
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+            return 'Elo: ' + context.parsed.x.toFixed(1);
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        min: 1150,
+        max: 1850,
+        ticks: { font: { family: "'DM Mono', monospace", size: 11 }, stepSize: 100 },
+        grid: { color: '#E2DDD5' }
+      },
+      y: {
+        ticks: { font: { family: "'DM Mono', monospace", size: 11, weight: '500' } },
+        grid: { display: false }
+      }
+    }
+  }
+});
+</script>
+
+</body>
+</html>
